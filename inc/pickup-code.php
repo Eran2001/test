@@ -12,6 +12,7 @@ const DEVHUB_PICKUP_CODE_META_KEY = 'pickup_code';
 add_action( 'woocommerce_payment_complete', 'devhub_maybe_generate_pickup_code', 20, 1 );
 add_action( 'woocommerce_order_status_processing', 'devhub_maybe_generate_pickup_code', 20, 1 );
 add_action( 'woocommerce_order_status_completed', 'devhub_maybe_generate_pickup_code', 20, 1 );
+add_action( 'woocommerce_store_api_checkout_order_processed', 'devhub_sync_pickup_shipping_meta_on_checkout', 30, 1 );
 
 add_action( 'woocommerce_order_details_after_order_table', 'devhub_render_pickup_code_order_details', 10, 1 );
 add_action( 'woocommerce_email_order_meta', 'devhub_render_pickup_code_email', 10, 4 );
@@ -218,6 +219,23 @@ function devhub_sync_pickup_shipping_meta( WC_Order $order, string $pickup_code 
 	}
 
 	return $updated;
+}
+
+/**
+ * Sync pickup shipping-line meta as soon as the checkout order is created.
+ *
+ * This keeps the draft/store-api order payload aligned before payment
+ * completion and before a pickup code exists.
+ *
+ * @param WC_Order $order WooCommerce order.
+ * @return void
+ */
+function devhub_sync_pickup_shipping_meta_on_checkout( WC_Order $order ): void {
+	if ( ! devhub_is_pickup_order( $order ) ) {
+		return;
+	}
+
+	devhub_sync_pickup_shipping_meta( $order, devhub_get_pickup_code( $order ) );
 }
 
 /**
