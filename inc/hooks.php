@@ -125,7 +125,57 @@ add_filter('loop_shop_per_page', fn() => 9, 20);
 // pwb-brand is a custom taxonomy (PWB Brands plugin), not a pa_* attribute,
 // so WooCommerce's built-in layered nav doesn't handle it — we do it here.
 
+add_action('pre_get_posts', 'devhub_filter_archive_by_product_category', 9);
 add_action('pre_get_posts', 'devhub_filter_archive_by_brand');
+
+function devhub_filter_archive_by_product_category(WP_Query $query): void
+{
+    if (is_admin() || !$query->is_main_query()) return;
+    if (!devhub_is_shop_page() && !devhub_is_product_category_page() && !devhub_is_product_tag_page()) return;
+
+    $raw = sanitize_text_field(wp_unslash($_GET['filter_product_cat'] ?? ''));
+    if ($raw === '') return;
+
+    $slugs = array_values(array_unique(array_filter(array_map('sanitize_title', explode(',', $raw)))));
+    if (empty($slugs)) return;
+
+    $tax_query   = (array) $query->get('tax_query');
+    $tax_query[] = [
+        'taxonomy' => 'product_cat',
+        'field' => 'slug',
+        'terms' => $slugs,
+        'operator' => 'IN',
+    ];
+    $query->set('tax_query', $tax_query);
+}
+
+function devhub_remove_taxonomy_from_tax_query(array $tax_query, string $taxonomy): array
+{
+    $cleaned_query = [];
+
+    foreach ($tax_query as $key => $clause) {
+        if ($key === 'relation') {
+            $cleaned_query['relation'] = $clause;
+            continue;
+        }
+
+        if (!is_array($clause)) {
+            continue;
+        }
+
+        if (($clause['taxonomy'] ?? '') === $taxonomy) {
+            continue;
+        }
+
+        $nested_clause = devhub_remove_taxonomy_from_tax_query($clause, $taxonomy);
+
+        if (isset($nested_clause['taxonomy']) || count($nested_clause) > (isset($nested_clause['relation']) ? 1 : 0)) {
+            $cleaned_query[] = $nested_clause;
+        }
+    }
+
+    return $cleaned_query;
+}
 
 function devhub_filter_archive_by_brand(WP_Query $query): void
 {
@@ -161,6 +211,7 @@ function devhub_filter_archive_by_brand(WP_Query $query): void
     if (count($brand_tax_query) === 1) return;
 
     $tax_query   = (array) $query->get('tax_query');
+    $tax_query   = devhub_remove_taxonomy_from_tax_query($tax_query, 'pa_brand');
     $tax_query[] = $brand_tax_query;
     $query->set('tax_query', $tax_query);
 }

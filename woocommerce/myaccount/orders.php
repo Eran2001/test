@@ -10,6 +10,33 @@
 
 defined( 'ABSPATH' ) || exit;
 
+$devhub_get_order_stage_label = static function ( WC_Order $order ): string {
+	$stage = sanitize_key( (string) $order->get_meta( 'devicehub_order_status', true ) );
+
+	if ( '' === $stage ) {
+		return '';
+	}
+
+	$labels = [
+		'order_received'         => __( 'Order received', 'devicehub-theme' ),
+		'payment_pending'        => __( 'Payment pending', 'devicehub-theme' ),
+		'payment_confirmed'      => __( 'Payment confirmed', 'devicehub-theme' ),
+		'packaging_in_progress'  => __( 'Packaging in progress', 'devicehub-theme' ),
+		'ready_for_dispatch'     => __( 'Ready for dispatch', 'devicehub-theme' ),
+		'dispatched'             => __( 'Dispatched', 'devicehub-theme' ),
+		'out_for_delivery'       => __( 'Out for delivery', 'devicehub-theme' ),
+		'ready_for_pickup'       => __( 'Ready for pickup', 'devicehub-theme' ),
+		'completed'              => __( 'Completed', 'devicehub-theme' ),
+		'cancelled'              => __( 'Cancelled', 'devicehub-theme' ),
+	];
+
+	if ( isset( $labels[ $stage ] ) ) {
+		return $labels[ $stage ];
+	}
+
+	return ucwords( str_replace( '_', ' ', $stage ) );
+};
+
 do_action( 'woocommerce_before_account_orders', $has_orders );
 ?>
 
@@ -29,8 +56,9 @@ do_action( 'woocommerce_before_account_orders', $has_orders );
 		<tbody>
 			<?php
 			foreach ( $customer_orders->orders as $customer_order ) {
-				$order      = wc_get_order( $customer_order ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-				$item_count = $order->get_item_count() - $order->get_item_count_refunded();
+				$order              = wc_get_order( $customer_order ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+				$item_count         = $order->get_item_count() - $order->get_item_count_refunded();
+				$custom_stage_label = $devhub_get_order_stage_label( $order );
 				?>
 				<tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-<?php echo esc_attr( $order->get_status() ); ?> order">
 					<?php foreach ( wc_get_account_orders_columns() as $column_id => $column_name ) : ?>
@@ -53,7 +81,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders );
 								<time datetime="<?php echo esc_attr( $order->get_date_created()->date( 'c' ) ); ?>"><?php echo esc_html( wc_format_datetime( $order->get_date_created() ) ); ?></time>
 
 							<?php elseif ( 'order-status' === $column_id ) : ?>
-								<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>
+								<?php echo esc_html( '' !== $custom_stage_label ? $custom_stage_label : wc_get_order_status_name( $order->get_status() ) ); ?>
 
 							<?php elseif ( 'order-total' === $column_id ) : ?>
 								<?php

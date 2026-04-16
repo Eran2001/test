@@ -71,11 +71,13 @@ do_action( 'woocommerce_before_customer_login_form' );
 						<span><?php esc_html_e( 'Sign up with Facebook', 'devicehub-theme' ); ?></span>
 					</a>
 
+					<?php /*
 					<button type="button" class="devhub-auth__option" data-devhub-auth-open="mobile-request">
 						<img class="devhub-auth__option-icon" src="<?php echo esc_url( $auth_icons['mobile'] ); ?>" alt=""
 							aria-hidden="true" />
 						<span><?php esc_html_e( 'Sign up with Mobile', 'devicehub-theme' ); ?></span>
 					</button>
+					*/ ?>
 
 					<button type="button" class="devhub-auth__option" data-devhub-auth-open="email">
 						<img class="devhub-auth__option-icon" src="<?php echo esc_url( $auth_icons['mail'] ); ?>" alt=""
@@ -203,6 +205,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 				<?php endif; ?>
 			</section>
 
+			<?php /*
 			<section class="devhub-auth__panel<?php echo $is_active_panel( 'mobile-request' ) ? ' is-active' : ''; ?>" data-devhub-panel="mobile-request" aria-labelledby="devhub-auth-mobile-title"<?php echo $is_active_panel( 'mobile-request' ) ? '' : ' hidden'; ?>>
 				<button type="button" class="devhub-auth__back" data-devhub-auth-open="chooser">
 					<span aria-hidden="true">&larr;</span>
@@ -304,6 +307,7 @@ do_action( 'woocommerce_before_customer_login_form' );
 						data-devhub-auth-open="mobile-request"><?php esc_html_e( 'Change mobile number', 'devicehub-theme' ); ?></button>
 				</p>
 			</section>
+			*/ ?>
 
 			<?php if ( $registration_enabled ) : ?>
 				<section class="devhub-auth__panel<?php echo $is_active_panel( 'register' ) ? ' is-active' : ''; ?>" data-devhub-panel="register"

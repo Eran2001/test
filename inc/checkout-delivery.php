@@ -436,6 +436,56 @@ function devhub_strip_legacy_delivery_meta_from_rest( WP_REST_Response $response
 		)
 	);
 
+	$canonical_pickup_code = '';
+
+	if ( function_exists( 'devhub_get_pickup_code' ) ) {
+		$canonical_pickup_code = devhub_get_pickup_code( $order );
+	}
+
+	if ( '' === $canonical_pickup_code ) {
+		foreach ( $data['meta_data'] as $meta_item ) {
+			if ( ! is_array( $meta_item ) || DEVHUB_PICKUP_CODE_META_KEY !== (string) ( $meta_item['key'] ?? '' ) ) {
+				continue;
+			}
+
+			$canonical_pickup_code = sanitize_text_field( (string) ( $meta_item['value'] ?? '' ) );
+
+			if ( '' !== $canonical_pickup_code ) {
+				break;
+			}
+		}
+	}
+
+	if ( '' !== $canonical_pickup_code ) {
+		$pickup_code_kept = false;
+		$data['meta_data'] = array_values(
+			array_filter(
+				$data['meta_data'],
+				static function ( $meta_item ) use ( $canonical_pickup_code, &$pickup_code_kept ) {
+					if ( ! is_array( $meta_item ) || DEVHUB_PICKUP_CODE_META_KEY !== (string) ( $meta_item['key'] ?? '' ) ) {
+						return true;
+					}
+
+					if ( $pickup_code_kept ) {
+						return false;
+					}
+
+					$pickup_code_kept = true;
+					return true;
+				}
+			)
+		);
+
+		foreach ( $data['meta_data'] as &$meta_item ) {
+			if ( ! is_array( $meta_item ) || DEVHUB_PICKUP_CODE_META_KEY !== (string) ( $meta_item['key'] ?? '' ) ) {
+				continue;
+			}
+
+			$meta_item['value'] = $canonical_pickup_code;
+		}
+		unset( $meta_item );
+	}
+
 	if ( ! empty( $data['line_items'] ) && is_array( $data['line_items'] ) ) {
 		foreach ( $data['line_items'] as &$line_item ) {
 			if ( empty( $line_item['image'] ) || ! is_array( $line_item['image'] ) ) {
@@ -447,6 +497,43 @@ function devhub_strip_legacy_delivery_meta_from_rest( WP_REST_Response $response
 			}
 		}
 		unset( $line_item );
+	}
+
+	if ( '' !== $canonical_pickup_code && ! empty( $data['shipping_lines'] ) && is_array( $data['shipping_lines'] ) ) {
+		foreach ( $data['shipping_lines'] as &$shipping_line ) {
+			if ( empty( $shipping_line['meta_data'] ) || ! is_array( $shipping_line['meta_data'] ) ) {
+				continue;
+			}
+
+			$pickup_code_kept = false;
+			$shipping_line['meta_data'] = array_values(
+				array_filter(
+					$shipping_line['meta_data'],
+					static function ( $meta_item ) use ( $canonical_pickup_code, &$pickup_code_kept ) {
+						if ( ! is_array( $meta_item ) || DEVHUB_PICKUP_CODE_META_KEY !== (string) ( $meta_item['key'] ?? '' ) ) {
+							return true;
+						}
+
+						if ( $pickup_code_kept ) {
+							return false;
+						}
+
+						$pickup_code_kept = true;
+						return true;
+					}
+				)
+			);
+
+			foreach ( $shipping_line['meta_data'] as &$meta_item ) {
+				if ( ! is_array( $meta_item ) || DEVHUB_PICKUP_CODE_META_KEY !== (string) ( $meta_item['key'] ?? '' ) ) {
+					continue;
+				}
+
+				$meta_item['value'] = $canonical_pickup_code;
+			}
+			unset( $meta_item );
+		}
+		unset( $shipping_line );
 	}
 
 	$response->set_data( $data );

@@ -13,6 +13,35 @@
 defined( 'ABSPATH' ) || exit;
 
 $notes = $order->get_customer_order_notes();
+
+$devhub_get_order_stage_label = static function ( WC_Order $order ): string {
+	$stage = sanitize_key( (string) $order->get_meta( 'devicehub_order_status', true ) );
+
+	if ( '' === $stage ) {
+		return '';
+	}
+
+	$labels = [
+		'order_received'         => __( 'Order received', 'devicehub-theme' ),
+		'payment_pending'        => __( 'Payment pending', 'devicehub-theme' ),
+		'payment_confirmed'      => __( 'Payment confirmed', 'devicehub-theme' ),
+		'packaging_in_progress'  => __( 'Packaging in progress', 'devicehub-theme' ),
+		'ready_for_dispatch'     => __( 'Ready for dispatch', 'devicehub-theme' ),
+		'dispatched'             => __( 'Dispatched', 'devicehub-theme' ),
+		'out_for_delivery'       => __( 'Out for delivery', 'devicehub-theme' ),
+		'ready_for_pickup'       => __( 'Ready for pickup', 'devicehub-theme' ),
+		'completed'              => __( 'Completed', 'devicehub-theme' ),
+		'cancelled'              => __( 'Cancelled', 'devicehub-theme' ),
+	];
+
+	if ( isset( $labels[ $stage ] ) ) {
+		return $labels[ $stage ];
+	}
+
+	return ucwords( str_replace( '_', ' ', $stage ) );
+};
+
+$devhub_order_stage_label = $devhub_get_order_stage_label( $order );
 ?>
 
 <?php /*
@@ -33,6 +62,19 @@ echo wp_kses_post(
 ?>
 </p>
 */ ?>
+
+<section class="devhub-order-stage-summary">
+	<?php if ( '' !== $devhub_order_stage_label ) : ?>
+		<p>
+			<strong><?php esc_html_e( 'Order stage:', 'devicehub-theme' ); ?></strong>
+			<?php echo esc_html( $devhub_order_stage_label ); ?>
+		</p>
+	<?php endif; ?>
+	<p>
+		<strong><?php esc_html_e( 'Order status:', 'devicehub-theme' ); ?></strong>
+		<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>
+	</p>
+</section>
 
 <?php if ( $notes ) : ?>
     <h2><?php esc_html_e( 'Order updates', 'woocommerce' ); ?></h2>

@@ -356,15 +356,36 @@
    8. Empty state
    ========================================================================== */
 
-.devhub-archive__main .woocommerce-info {
-  background: rgba(255, 255, 255, 0.94);
+.devhub-archive-empty-state {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  min-height: 92px;
+  padding: 24px 32px;
   border: 1px solid var(--devhub-border);
-  border-left: 4px solid var(--devhub-primary);
-  border-radius: calc(var(--devhub-radius-md) + 2px);
-  padding: 18px 22px;
-  font-size: var(--devhub-text-md);
-  color: var(--devhub-mid);
+  border-radius: var(--devhub-radius-md);
+  background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
   box-shadow: var(--devhub-shadow-card);
+}
+
+.devhub-archive-empty-state__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  color: var(--devhub-primary);
+  font-size: 2rem;
+}
+
+.devhub-archive-empty-state__message {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.1vw, 1.9rem);
+  line-height: 1.4;
+  color: var(--devhub-dark);
+  font-weight: 500;
 }
 
 /* ==========================================================================
@@ -389,10 +410,23 @@
   .devhub-archive__grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .devhub-archive-empty-state {
+    padding: 20px 22px;
+  }
 }
 
 @media (max-width: 480px) {
   .devhub-archive__grid {
     grid-template-columns: 1fr;
+  }
+
+  .devhub-archive-empty-state {
+    gap: 14px;
+    padding: 18px 18px;
+  }
+
+  .devhub-archive-empty-state__message {
+    font-size: 1.4rem;
   }
 }

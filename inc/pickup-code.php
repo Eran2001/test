@@ -9,7 +9,6 @@ defined( 'ABSPATH' ) || exit;
 
 const DEVHUB_PICKUP_CODE_META_KEY = 'pickup_code';
 
-add_action( 'woocommerce_payment_complete', 'devhub_maybe_generate_pickup_code', 20, 1 );
 add_action( 'woocommerce_order_status_processing', 'devhub_maybe_generate_pickup_code', 20, 1 );
 add_action( 'woocommerce_order_status_completed', 'devhub_maybe_generate_pickup_code', 20, 1 );
 add_action( 'woocommerce_store_api_checkout_order_processed', 'devhub_sync_pickup_shipping_meta_on_checkout', 30, 1 );
@@ -124,6 +123,33 @@ function devhub_get_pickup_delivery_method( WC_Order $order ): string {
  */
 function devhub_get_pickup_code( WC_Order $order ): string {
 	return strtoupper( sanitize_text_field( (string) $order->get_meta( DEVHUB_PICKUP_CODE_META_KEY, true ) ) );
+}
+
+/**
+ * Collect every pickup code currently stored on the order and shipping items.
+ *
+ * @param WC_Order $order WooCommerce order.
+ * @return array<int, string>
+ */
+function devhub_get_all_pickup_codes( WC_Order $order ): array {
+	$codes = array_filter( devhub_get_wc_meta_values( $order, DEVHUB_PICKUP_CODE_META_KEY ) );
+
+	foreach ( $order->get_shipping_methods() as $shipping_item ) {
+		$codes = array_merge( $codes, array_filter( devhub_get_wc_meta_values( $shipping_item, DEVHUB_PICKUP_CODE_META_KEY ) ) );
+	}
+
+	$codes = array_values(
+		array_unique(
+			array_map(
+				static function ( string $code ): string {
+					return strtoupper( sanitize_text_field( $code ) );
+				},
+				$codes
+			)
+		)
+	);
+
+	return $codes;
 }
 
 /**
@@ -248,8 +274,13 @@ function devhub_sync_pickup_shipping_meta_on_checkout( WC_Order $order ): void {
  * @return string
  */
 function devhub_ensure_pickup_code( WC_Order $order ): string {
-	$existing_code = devhub_get_pickup_code( $order );
+	$existing_code  = devhub_get_pickup_code( $order );
+	$existing_codes = devhub_get_all_pickup_codes( $order );
 	$created_code  = false;
+
+	if ( '' === $existing_code && ! empty( $existing_codes ) ) {
+		$existing_code = $existing_codes[0];
+	}
 
 	if ( '' === $existing_code && ! devhub_is_pickup_order( $order ) ) {
 		return '';

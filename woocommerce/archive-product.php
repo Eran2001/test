@@ -12,6 +12,40 @@
 
 defined('ABSPATH') || exit;
 
+function devhub_get_selected_archive_category_slugs(): array
+{
+    $raw = sanitize_text_field(wp_unslash($_GET['filter_product_cat'] ?? ''));
+
+    if ($raw !== '') {
+        return array_values(array_unique(array_filter(array_map('sanitize_title', explode(',', $raw)))));
+    }
+
+    $current_cat = is_product_category() ? get_queried_object() : null;
+
+    if ($current_cat instanceof WP_Term) {
+        return [$current_cat->slug];
+    }
+
+    return [];
+}
+
+function devhub_get_archive_filter_shop_url(): string
+{
+    $query_args = [];
+
+    foreach ($_GET as $key => $value) {
+        if (!is_scalar($value)) {
+            continue;
+        }
+
+        $query_args[sanitize_key((string) $key)] = sanitize_text_field(wp_unslash((string) $value));
+    }
+
+    unset($query_args['paged']);
+
+    return add_query_arg($query_args, get_permalink(wc_get_page_id('shop')));
+}
+
 
 /**
  * Render category links as a filter group.
@@ -42,8 +76,9 @@ function devhub_archive_category_group(): void
         return;
     }
 
-    $current_cat = is_product_category() ? get_queried_object() : null;
-    $shop_url = get_permalink(wc_get_page_id('shop'));
+    $active_slugs = devhub_get_selected_archive_category_slugs();
+    $all_products_url = remove_query_arg('filter_product_cat', devhub_get_archive_filter_shop_url());
+    $base = $all_products_url;
     ?>
     <div class="devhub-filter-group">
         <button class="devhub-filter-group__toggle" type="button" aria-expanded="true">
@@ -52,19 +87,25 @@ function devhub_archive_category_group(): void
         </button>
         <ul class="devhub-filter-group__list">
             <li>
-                <a href="<?php echo esc_url($shop_url); ?>"
-                    class="devhub-filter-option<?php echo !$current_cat ? ' devhub-filter-option--active' : ''; ?>">
+                <a href="<?php echo esc_url($all_products_url); ?>"
+                    class="devhub-filter-option<?php echo empty($active_slugs) ? ' devhub-filter-option--active' : ''; ?>">
                     <span class="devhub-filter-option__check" aria-hidden="true">
-                        <?php if (!$current_cat): ?><i class="fas fa-check"></i><?php endif; ?>
+                        <?php if (empty($active_slugs)): ?><i class="fas fa-check"></i><?php endif; ?>
                     </span>
                     <span class="devhub-filter-option__name">All Products</span>
                 </a>
             </li>
             <?php foreach ($terms as $term):
-                $is_active = $current_cat && $current_cat->term_id === $term->term_id;
+                $is_active = in_array($term->slug, $active_slugs, true);
+                $new_slugs = $is_active
+                    ? array_values(array_diff($active_slugs, [$term->slug]))
+                    : array_values(array_unique(array_merge($active_slugs, [$term->slug])));
+                $href = !empty($new_slugs)
+                    ? add_query_arg('filter_product_cat', implode(',', $new_slugs), $base)
+                    : $all_products_url;
                 ?>
                 <li>
-                    <a href="<?php echo esc_url(get_term_link($term)); ?>"
+                    <a href="<?php echo esc_url($href); ?>"
                         class="devhub-filter-option<?php echo $is_active ? ' devhub-filter-option--active' : ''; ?>">
                         <span class="devhub-filter-option__check" aria-hidden="true">
                             <?php if ($is_active): ?><i class="fas fa-check"></i><?php endif; ?>
@@ -153,7 +194,16 @@ function devhub_get_archive_scope_product_ids(): array
 
     $tax_query = [];
 
-    if (is_product_category()) {
+    $selected_categories = devhub_get_selected_archive_category_slugs();
+
+    if (!empty($selected_categories)) {
+        $tax_query[] = [
+            'taxonomy' => 'product_cat',
+            'field' => 'slug',
+            'terms' => $selected_categories,
+            'operator' => 'IN',
+        ];
+    } elseif (is_product_category()) {
         $current_term = get_queried_object();
 
         if ($current_term instanceof WP_Term) {
@@ -283,8 +333,11 @@ function devhub_archive_brand_filter_group(): void
                     : array_merge($active, [$term['slug']]);
                 $base = remove_query_arg('paged');
                 $href = $new_vals
-                    ? add_query_arg('filter_brand', implode(',', $new_vals), $base)
-                    : remove_query_arg('filter_brand', $base);
+                    ? add_query_arg([
+                        'filter_brand' => implode(',', $new_vals),
+                        'query_type_brand' => 'or',
+                    ], $base)
+                    : remove_query_arg(['filter_brand', 'query_type_brand'], $base);
                 ?>
                 <li>
                     <a href="<?php echo esc_url($href); ?>"
@@ -354,12 +407,21 @@ function devhub_archive_brand_filter_group(): void
                         ],
                     ];
 
-                    $current_cat = is_product_category() ? get_queried_object() : null;
+                    $active_category_slugs = devhub_get_selected_archive_category_slugs();
+                    $visible_attribute_filters = [];
 
-                    if ($current_cat && isset($category_attribute_map[$current_cat->slug])) {
-                        foreach ($category_attribute_map[$current_cat->slug] as $attr) {
-                            devhub_archive_filter_group($attr['label'], $attr['taxonomy'], $attr['param']);
+                    foreach ($active_category_slugs as $category_slug) {
+                        if (!isset($category_attribute_map[$category_slug])) {
+                            continue;
                         }
+
+                        foreach ($category_attribute_map[$category_slug] as $attr) {
+                            $visible_attribute_filters[$attr['param']] = $attr;
+                        }
+                    }
+
+                    foreach ($visible_attribute_filters as $attr) {
+                        devhub_archive_filter_group($attr['label'], $attr['taxonomy'], $attr['param']);
                     }
                     ?>
 
