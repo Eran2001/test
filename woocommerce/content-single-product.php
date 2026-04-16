@@ -186,7 +186,8 @@ $specs_is_active = !$has_features_tab && $has_specs_tab;
 
                 <div class="devhub-single__main-image">
                     <img src="<?php echo esc_url($main_img); ?>"
-                        alt="<?php echo esc_attr($default_gallery[0]['alt']); ?>">
+                        alt="<?php echo esc_attr($default_gallery[0]['alt']); ?>"
+                        data-full-src="<?php echo esc_url($default_gallery[0]['full_src'] ?? $main_img); ?>">
                 </div>
 
                 <div class="devhub-single__thumbnails-slider" id="devhubGallerySlider">

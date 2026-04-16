@@ -280,9 +280,10 @@ function devhub_build_gallery_image_data(int $attachment_id, string $fallback_al
         return null;
     }
 
+    $full_src = wp_get_attachment_image_url($attachment_id, 'full') ?: $placeholder_img;
+
     $main_src = wp_get_attachment_image_url($attachment_id, 'woocommerce_single')
-        ?: wp_get_attachment_image_url($attachment_id, 'full')
-        ?: $placeholder_img;
+        ?: $full_src;
 
     $thumb_src = wp_get_attachment_image_url($attachment_id, 'woocommerce_thumbnail')
         ?: $main_src;
@@ -302,6 +303,7 @@ function devhub_build_gallery_image_data(int $attachment_id, string $fallback_al
     return [
         'id' => $attachment_id,
         'main_src' => $main_src,
+        'full_src' => $full_src,
         'thumb_src' => $thumb_src,
         'alt' => $alt,
     ];

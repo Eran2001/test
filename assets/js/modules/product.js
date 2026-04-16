@@ -10,6 +10,8 @@
   document.addEventListener("DOMContentLoaded", function () {
     devhubInitTabs();
     devhubInitGallery();
+    devhubInitImageZoom();
+    devhubInitImageLightbox();
     devhubInitColorSwatches();
     devhubInitStorageOptions();
     devhubResolveVariation();
@@ -192,12 +194,18 @@
       var activeThumb = thumbs[activeIndex];
       var nextSrc = activeThumb.getAttribute("data-main-src");
       var nextAlt = activeThumb.getAttribute("data-alt");
+      var nextFullSrc = activeThumb.getAttribute("data-full-src");
 
       if (nextSrc) {
         mainImg.src = nextSrc;
       }
       if (nextAlt !== null) {
         mainImg.alt = nextAlt || "";
+      }
+      if (nextFullSrc) {
+        mainImg.setAttribute("data-full-src", nextFullSrc);
+      } else {
+        mainImg.removeAttribute("data-full-src");
       }
 
       if (isVerticalMode()) {
@@ -232,11 +240,15 @@
         var thumbSrc = image.thumb_src || image.gallery_thumbnail_src || image.src || mainSrc;
         var alt = image.alt || "";
 
+        var fullSrc = image.full_src || mainSrc;
+
         return (
           '<button class="devhub-single__thumb' +
           (index === 0 ? " devhub-single__thumb--active" : "") +
           '" type="button" data-main-src="' +
           escapeAttr(mainSrc) +
+          '" data-full-src="' +
+          escapeAttr(fullSrc) +
           '" data-alt="' +
           escapeAttr(alt) +
           '" aria-label="' +
@@ -699,6 +711,187 @@
       resizeTimer = setTimeout(function () {
         slide();
       }, 100);
+    });
+  }
+
+  // ── Image zoom (cursor-tracking magnifier) ────────────────────────────────
+
+  function devhubInitImageZoom() {
+    var box = document.querySelector(".devhub-single__main-image");
+    if (!box) return;
+
+    function getImg() {
+      return box.querySelector("img");
+    }
+
+    box.addEventListener("mouseenter", function (e) {
+      var img = getImg();
+      if (!img) return;
+      var rect = box.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      img.style.transformOrigin = x + "% " + y + "%";
+      img.style.transition = "transform 0.22s ease";
+      img.style.transform = "scale(2.2)";
+    });
+
+    box.addEventListener("mousemove", function (e) {
+      var img = getImg();
+      if (!img) return;
+      var rect = box.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      // Update origin instantly so zoom follows cursor in real time
+      img.style.transition = "none";
+      img.style.transformOrigin = x + "% " + y + "%";
+    });
+
+    box.addEventListener("mouseleave", function () {
+      var img = getImg();
+      if (!img) return;
+      img.style.transition = "transform 0.22s ease, transform-origin 0.22s ease";
+      img.style.transform = "";
+      img.style.transformOrigin = "";
+    });
+  }
+
+  // ── Image lightbox ────────────────────────────────────────────────────────
+
+  function devhubInitImageLightbox() {
+    var mainImageBox = document.querySelector(".devhub-single__main-image");
+    if (!mainImageBox) return;
+
+    // Build lightbox DOM once
+    var lightbox = document.createElement("div");
+    lightbox.className = "devhub-lightbox";
+    lightbox.setAttribute("role", "dialog");
+    lightbox.setAttribute("aria-modal", "true");
+    lightbox.setAttribute("aria-label", "Product image viewer");
+
+    var inner = document.createElement("div");
+    inner.className = "devhub-lightbox__inner";
+
+    var img = document.createElement("img");
+    img.className = "devhub-lightbox__img";
+    img.alt = "";
+
+    var closeBtn = document.createElement("button");
+    closeBtn.className = "devhub-lightbox__close";
+    closeBtn.setAttribute("aria-label", "Close");
+    closeBtn.innerHTML = "&times;";
+
+    var prevBtn = document.createElement("button");
+    prevBtn.className = "devhub-lightbox__nav devhub-lightbox__nav--prev";
+    prevBtn.setAttribute("aria-label", "Previous image");
+    prevBtn.innerHTML = '<i class="fas fa-chevron-left" aria-hidden="true"></i>';
+    prevBtn.hidden = true;
+
+    var nextBtn = document.createElement("button");
+    nextBtn.className = "devhub-lightbox__nav devhub-lightbox__nav--next";
+    nextBtn.setAttribute("aria-label", "Next image");
+    nextBtn.innerHTML = '<i class="fas fa-chevron-right" aria-hidden="true"></i>';
+    nextBtn.hidden = true;
+
+    var counter = document.createElement("div");
+    counter.className = "devhub-lightbox__counter";
+    counter.hidden = true;
+
+    inner.appendChild(img);
+    lightbox.appendChild(closeBtn);
+    lightbox.appendChild(prevBtn);
+    lightbox.appendChild(inner);
+    lightbox.appendChild(nextBtn);
+    lightbox.appendChild(counter);
+    document.body.appendChild(lightbox);
+
+    var images = [];
+    var currentIndex = 0;
+
+    function collectImages() {
+      var thumbs = document.querySelectorAll(".devhub-single__thumb");
+      var list = Array.from(thumbs).map(function (thumb) {
+        return {
+          src: thumb.getAttribute("data-full-src") || thumb.getAttribute("data-main-src") || "",
+          alt: thumb.getAttribute("data-alt") || "",
+        };
+      }).filter(function (item) { return !!item.src; });
+      return list;
+    }
+
+    function updateNav() {
+      var multiple = images.length > 1;
+      prevBtn.hidden = !multiple || currentIndex <= 0;
+      nextBtn.hidden = !multiple || currentIndex >= images.length - 1;
+      counter.hidden = !multiple;
+      if (multiple) {
+        counter.textContent = (currentIndex + 1) + " / " + images.length;
+      }
+    }
+
+    function showAt(index) {
+      currentIndex = Math.max(0, Math.min(index, images.length - 1));
+      img.src = images[currentIndex].src;
+      img.alt = images[currentIndex].alt;
+      updateNav();
+    }
+
+    function openLightbox() {
+      var mainImg = mainImageBox.querySelector("img");
+      if (!mainImg) return;
+
+      images = collectImages();
+      var currentSrc = mainImg.getAttribute("data-full-src") || mainImg.src;
+
+      // Find which index is currently showing
+      currentIndex = 0;
+      for (var i = 0; i < images.length; i++) {
+        if (images[i].src === currentSrc) { currentIndex = i; break; }
+      }
+
+      // Fallback: no thumbs found
+      if (!images.length) {
+        images = [{ src: currentSrc, alt: mainImg.alt || "" }];
+        currentIndex = 0;
+      }
+
+      showAt(currentIndex);
+      lightbox.classList.add("devhub-lightbox--open");
+      document.body.style.overflow = "hidden";
+      closeBtn.focus();
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("devhub-lightbox--open");
+      document.body.style.overflow = "";
+    }
+
+    mainImageBox.addEventListener("click", openLightbox);
+
+    closeBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    prevBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (currentIndex > 0) showAt(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (currentIndex < images.length - 1) showAt(currentIndex + 1);
+    });
+
+    // Click backdrop to close
+    lightbox.addEventListener("click", function (e) {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!lightbox.classList.contains("devhub-lightbox--open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft" && currentIndex > 0) showAt(currentIndex - 1);
+      if (e.key === "ArrowRight" && currentIndex < images.length - 1) showAt(currentIndex + 1);
     });
   }
 
