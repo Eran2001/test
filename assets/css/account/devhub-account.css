@@ -1,0 +1,2007 @@
+/* ==========================================================================
+   My Account Page — DeviceHub
+   ========================================================================== */
+
+/* Accent colour for the account section (teal) */
+.woocommerce-account {
+  --devhub-account-teal: var(--devhub-primary);
+  --devhub-account-teal-light: #fff2e8;
+  --devhub-account-border: #e8e8e8;
+  --devhub-account-card-bg: #fff;
+  --devhub-account-sub-indent: 16px;
+}
+
+/* Remove Shopire page.php section/container/col spacing on logged-in account views */
+.woocommerce-account.logged-in .wf_posts.wf-py-default {
+  padding: 0 !important;
+}
+.woocommerce-account.logged-in .wf_posts > .wf-container {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+.woocommerce-account.logged-in .wf_posts .wf-row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.woocommerce-account.logged-in .wf_posts [class*="wf-col"] {
+  margin-top: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Guest auth flow */
+.woocommerce-account:not(.logged-in) .wf_posts.wf-py-default {
+  padding-top: 20px !important;
+  padding-bottom: 72px !important;
+}
+
+.woocommerce-account:not(.logged-in) .wf_posts > .wf-container {
+  max-width: 1120px;
+}
+
+.woocommerce-account:not(.logged-in) .post.single-post {
+  margin-bottom: 0;
+}
+
+.woocommerce-account:not(.logged-in) .woocommerce-notices-wrapper {
+  width: min(100%, 480px);
+  margin: 0 auto 18px;
+}
+
+.devhub-auth {
+  min-height: 75vh;
+}
+
+.devhub-auth__shell {
+  display: flex;
+  justify-content: center;
+}
+
+.devhub-auth__card {
+  width: min(100%, 480px);
+  padding: 36px 32px 30px;
+  background:
+    radial-gradient(circle at top, rgba(255, 102, 0, 0.08), transparent 34%),
+    #fff;
+  border: 1px solid rgba(232, 232, 232, 0.9);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.devhub-auth__brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.devhub-auth__brand-logo {
+  width: auto;
+  height: 32px;
+  display: inline-block;
+}
+
+.devhub-auth__panel + .devhub-auth__panel {
+  margin-top: 28px;
+  padding-top: 28px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.devhub-auth.is-enhanced .devhub-auth__panel + .devhub-auth__panel {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.devhub-auth.is-enhanced .devhub-auth__panel {
+  display: none;
+}
+
+.devhub-auth.is-enhanced .devhub-auth__panel.is-active {
+  display: block;
+}
+
+.devhub-auth__intro {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.devhub-auth__intro h2,
+.devhub-auth__title {
+  font-size: 28px;
+  line-height: 1.1;
+  margin: 0 0 8px;
+  color: var(--devhub-dark, #111);
+}
+
+.devhub-auth__intro p,
+.devhub-auth__subtitle {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.devhub-auth__options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.devhub-auth__option {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  background: #fff;
+  color: #1c1c1c;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.devhub-auth__option:hover,
+.devhub-auth__option:focus-visible {
+  border-color: rgba(255, 102, 0, 0.4);
+  box-shadow: 0 10px 20px rgba(255, 102, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.devhub-auth__option:focus-visible {
+  outline: 2px solid rgba(255, 102, 0, 0.18);
+  outline-offset: 2px;
+}
+
+.devhub-auth__option--ghost {
+  justify-content: center;
+  border-color: #e4e4e4;
+}
+
+.devhub-auth__option-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex: 0 0 20px;
+}
+
+.devhub-auth__options
+  .devhub-auth__option:nth-child(2)
+  .devhub-auth__option-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.devhub-auth__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.devhub-auth__divider::before,
+.devhub-auth__divider::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: #e9e9e9;
+}
+
+.devhub-auth__status {
+  margin-top: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #fff5ee;
+  color: #914417;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.devhub-auth__status[hidden] {
+  display: none;
+}
+
+.devhub-auth__status[data-state="error"] {
+  background: #fff5ee;
+  color: #914417;
+}
+
+.devhub-auth__status[data-state="success"] {
+  background: #eef8f0;
+  color: #17683d;
+}
+
+.devhub-auth__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--devhub-account-teal);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.devhub-auth__back:hover,
+.devhub-auth__back:active,
+.devhub-auth__back:focus-visible {
+  color: var(--devhub-primary-dark, #e55a00);
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.devhub-auth__form {
+  margin-top: 18px;
+}
+
+.devhub-auth__form form.login,
+.devhub-auth__form form.register,
+.devhub-auth__form form.lost_reset_password {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.devhub-auth__form .form-row-first,
+.devhub-auth__form .form-row-last,
+.devhub-auth__form .form-row-wide {
+  float: none !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Guest form — 2-column grid for paired fields */
+.devhub-auth__guest-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+}
+
+.devhub-auth__guest-form .devhub-auth__section-label,
+.devhub-auth__guest-form .form-row-wide,
+.devhub-auth__guest-form .devhub-auth__billing-fields,
+.devhub-auth__guest-form [data-devhub-guest-status],
+.devhub-auth__guest-form .form-row:last-child {
+  grid-column: 1 / -1;
+}
+
+.devhub-auth__guest-form .form-row-first,
+.devhub-auth__guest-form .form-row-last {
+  width: 100% !important;
+  float: none !important;
+}
+
+/* Billing sub-grid — same 2-column layout, only when visible */
+.devhub-auth__billing-fields:not([hidden]) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+}
+
+.devhub-auth__billing-fields .devhub-auth__section-label {
+  grid-column: 1 / -1;
+}
+
+.devhub-auth__form .form-row {
+  margin-bottom: 18px;
+}
+
+.devhub-auth__form .form-row label {
+  display: block;
+  margin-bottom: 8px;
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.devhub-auth__form .form-row input.input-text,
+.devhub-auth__form .form-row select {
+  min-height: 50px;
+  padding: 12px 16px;
+  border: 1px solid #dddddd !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-size: 14px;
+}
+
+.devhub-auth__form .form-row input.input-text:focus,
+.devhub-auth__form .form-row select:focus {
+  border-color: rgba(255, 102, 0, 0.65) !important;
+  outline: none !important;
+}
+
+.devhub-auth__form .show-password-input {
+  top: 50% !important;
+  right: 16px !important;
+  transform: translateY(-50%);
+}
+
+.devhub-auth__form .devhub-auth__actions.form-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: nowrap;
+  margin: 0 0 18px !important;
+  padding: 0 !important;
+}
+
+.devhub-auth__actions .woocommerce-form-login__rememberme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  margin: 0;
+  color: #444;
+  font-size: 13px;
+  line-height: 1;
+  flex: 0 0 auto;
+  cursor: pointer;
+}
+
+.devhub-auth__actions .woocommerce-form-login__rememberme input {
+  margin: 0;
+  position: relative;
+  top: 0;
+  flex: 0 0 auto;
+}
+
+.devhub-auth__forgot {
+  margin: 0 0 0 auto !important;
+  padding: 0 !important;
+  text-align: right;
+  font-size: 13px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+
+.devhub-auth__forgot a {
+  color: var(--devhub-account-teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.devhub-auth__forgot a:hover,
+.devhub-auth__forgot a:focus-visible {
+  color: var(--devhub-primary-dark, #e55a00);
+}
+
+.devhub-auth__submit {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 24px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  background: var(--devhub-account-teal) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.devhub-auth__submit:hover,
+.devhub-auth__submit:focus-visible {
+  background: var(--devhub-primary-dark, #e55a00) !important;
+  transform: translateY(-1px);
+}
+
+.devhub-auth__secondary-button {
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 24px !important;
+  border: 1px solid rgba(255, 102, 0, 0.22) !important;
+  border-radius: 10px !important;
+  background: rgba(255, 102, 0, 0.06) !important;
+  color: var(--devhub-account-teal) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.devhub-auth__secondary-button:hover,
+.devhub-auth__secondary-button:focus-visible {
+  border-color: rgba(255, 102, 0, 0.45) !important;
+  background: rgba(255, 102, 0, 0.12) !important;
+  transform: translateY(-1px);
+}
+
+.devhub-auth__subtitle--register-otp {
+  margin: 6px 0 0;
+}
+
+.devhub-auth__footer {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #666;
+}
+
+.devhub-auth__footer a,
+.devhub-auth__footer button {
+  color: var(--devhub-account-teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.devhub-auth__footer button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.devhub-auth__footer a:hover,
+.devhub-auth__footer button:hover,
+.devhub-auth__footer a:focus-visible,
+.devhub-auth__footer button:focus-visible {
+  color: var(--devhub-primary-dark, #e55a00);
+}
+
+.devhub-auth__notice {
+  margin-top: 18px;
+}
+
+.devhub-auth__notice .woocommerce-message,
+.devhub-auth__notice .woocommerce-info,
+.devhub-auth__notice .woocommerce-error {
+  margin: 0 0 18px !important;
+  padding: 18px 20px !important;
+  line-height: 1.5 !important;
+  border-radius: 12px;
+  border: 1px solid #e8efc3 !important;
+  background: #f9fbef !important;
+  box-shadow: none !important;
+}
+
+.devhub-auth__notice .woocommerce-info::before,
+.devhub-auth__notice .woocommerce-message::before,
+.devhub-auth__notice .woocommerce-error::before {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.devhub-auth__confirmation {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #555;
+}
+
+/* ==========================================================================
+   Outer layout — sidebar + content
+   ========================================================================== */
+
+.devhub-account-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+  padding-top: 40px;
+  padding-bottom: 60px;
+  margin-top: 40px;
+}
+
+.devhub-account-sidebar {
+  flex: 0 0 280px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.devhub-account-content {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* ==========================================================================
+   User card
+   ========================================================================== */
+
+.devhub-account-user-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--devhub-account-card-bg);
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  padding: 18px 16px;
+}
+
+.devhub-account-avatar {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.devhub-account-avatar svg {
+  display: block;
+}
+
+.devhub-account-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.devhub-account-user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--devhub-dark, #111);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.devhub-account-user-email {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.devhub-account-logout {
+  font-size: 12px;
+  color: var(--devhub-account-teal);
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.devhub-account-logout:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Account navigation
+   ========================================================================== */
+
+.devhub-account-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Each top-level nav item card */
+.devhub-account-nav__item {
+  background: var(--devhub-account-card-bg);
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.devhub-account-nav__item:hover {
+  border-color: var(--devhub-account-teal);
+}
+
+/* Direct link inside a nav item */
+.devhub-account-nav__item > a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--devhub-dark, #111);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.devhub-account-nav__item > a:hover {
+  color: var(--devhub-account-teal);
+}
+
+/* Active state */
+.devhub-account-nav__item.is-active > a {
+  color: var(--devhub-account-teal);
+  border-left: 3px solid var(--devhub-account-teal);
+  background: var(--devhub-account-teal-light);
+  padding-left: 13px; /* compensate for the 3px border */
+}
+
+/* Nav icon */
+.devhub-account-nav__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  color: inherit;
+}
+
+.devhub-account-nav__icon svg {
+  display: block;
+}
+
+/* ==========================================================================
+   "Your account" accordion group
+   ========================================================================== */
+
+.devhub-account-nav__group-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--devhub-dark, #111);
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s;
+}
+
+.devhub-account-nav__group-btn:focus,
+.devhub-account-nav__group-btn:active {
+  outline: none;
+  box-shadow: none;
+}
+
+.devhub-account-nav__group-btn:hover {
+  color: var(--devhub-account-teal);
+}
+
+/* Chevron sits at the far right */
+.devhub-account-nav__chevron {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.devhub-account-nav__chevron svg {
+  display: block;
+}
+
+/* Rotate chevron when open */
+.devhub-account-nav__group.is-open .devhub-account-nav__chevron {
+  transform: rotate(180deg);
+}
+
+/* Sub-menu hidden by default — two classes for specificity (beats .devhub-account-nav ul) */
+.devhub-account-nav .devhub-account-nav__sub {
+  display: none;
+  gap: 0;
+  padding: 6px 12px 10px 44px;
+  border-top: 1px solid var(--devhub-account-border);
+}
+
+.devhub-account-nav__group.is-open .devhub-account-nav__sub {
+  display: flex;
+  flex-direction: column;
+}
+
+.devhub-account-nav__sub li {
+  list-style: none;
+}
+
+.devhub-account-nav__sub li a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.15s;
+  border-radius: 6px;
+  position: relative;
+}
+
+.devhub-account-nav__sub li a::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ccc;
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+.devhub-account-nav__sub li a:hover {
+  color: var(--devhub-account-teal);
+}
+
+.devhub-account-nav__sub li a:hover::before {
+  background: var(--devhub-account-teal);
+}
+
+.devhub-account-nav__sub li.is-active a {
+  color: var(--devhub-account-teal);
+  font-weight: 600;
+}
+
+.devhub-account-nav__sub li.is-active a::before {
+  background: var(--devhub-account-teal);
+}
+
+/* Remove empty notices wrapper gap */
+.devhub-account-content .woocommerce-notices-wrapper:empty {
+  display: none;
+}
+
+/* ==========================================================================
+   Dashboard content
+   ========================================================================== */
+
+.devhub-dashboard__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--devhub-dark, #111);
+  margin: 0 0 12px;
+}
+
+.devhub-dashboard__divider {
+  border: none;
+  border-top: 1px solid var(--devhub-account-border);
+  margin: 0 0 20px;
+}
+
+.devhub-dashboard__intro {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.devhub-dashboard__intro a {
+  color: var(--devhub-account-teal);
+  text-decoration: none;
+}
+
+.devhub-dashboard__intro a:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Dashboard stat cards
+   ========================================================================== */
+
+.devhub-dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.devhub-dashboard-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 16px 22px;
+  background: var(--devhub-account-card-bg);
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.devhub-dashboard-card:hover {
+  border-color: var(--devhub-account-teal);
+  box-shadow: 0 4px 14px rgba(255, 102, 0, 0.12);
+}
+
+/* Count badge — top-right of icon area */
+.devhub-dashboard-card__badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 50px;
+  background: var(--devhub-account-teal);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.devhub-dashboard-card__icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #222;
+}
+
+.devhub-dashboard-card__icon svg {
+  width: 42px;
+  height: 42px;
+  display: block;
+}
+
+.devhub-dashboard-card__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #333;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* ==========================================================================
+   Orders table
+   ========================================================================== */
+
+.devhub-account-content .woocommerce-orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff !important;
+  border: 1px solid var(--devhub-account-border) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  font-size: 14px;
+  box-shadow: none !important;
+  table-layout: fixed;
+}
+
+/* Reset all cell borders from Shopire, then re-apply full grid */
+.devhub-account-content .woocommerce-orders-table th,
+.devhub-account-content .woocommerce-orders-table td {
+  border-top: none !important;
+  border-left: none !important;
+  border-bottom: 1px solid var(--devhub-account-border) !important;
+  border-right: 1px solid var(--devhub-account-border) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* No right border on last column */
+.devhub-account-content .woocommerce-orders-table th:last-child,
+.devhub-account-content .woocommerce-orders-table td:last-child {
+  border-right: none !important;
+}
+
+/* No bottom border on last row */
+.devhub-account-content .woocommerce-orders-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Header row */
+.devhub-account-content .woocommerce-orders-table thead tr {
+  background: #fafafa !important;
+  border-bottom: 1px solid var(--devhub-account-border) !important;
+}
+
+.devhub-account-content .woocommerce-orders-table thead th {
+  padding: 14px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  text-align: left !important;
+  white-space: nowrap;
+  background: #fafafa !important;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table
+  thead
+  th.woocommerce-orders-table__header-order-number {
+  width: 104px !important;
+  max-width: 104px !important;
+}
+
+/* Body rows — only a bottom divider, no left/right borders */
+.devhub-account-content .woocommerce-orders-table tbody tr {
+  border-bottom: 1px solid var(--devhub-account-border) !important;
+  background: #fff !important;
+  transition: background 0.12s;
+}
+
+.devhub-account-content .woocommerce-orders-table tbody tr:last-child {
+  border-bottom: none !important;
+}
+
+.devhub-account-content .woocommerce-orders-table tbody tr:hover {
+  background: #fafafa !important;
+}
+
+.devhub-account-content .woocommerce-orders-table tbody tr td {
+  padding: 6px 16px !important;
+  color: #444 !important;
+  vertical-align: middle !important;
+  background: transparent !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* Kill WooCommerce's min-height: 3.5rem on my_account_orders td */
+.woocommerce table.my_account_orders td,
+.woocommerce table.my_account_orders th {
+  min-height: 0 !important;
+  padding: 6px 16px !important;
+}
+
+/* Order number — narrow, bold */
+.devhub-account-content
+  .woocommerce-orders-table
+  .woocommerce-orders-table__header-order-number,
+.devhub-account-content .woocommerce-orders-table__cell-order-number {
+  width: 104px !important;
+  min-width: 0 !important;
+  max-width: 104px !important;
+  white-space: nowrap !important;
+  font-weight: 700 !important;
+  color: var(--devhub-dark, #111) !important;
+}
+
+.devhub-account-content .woocommerce-orders-table__cell-order-number a {
+  color: var(--devhub-dark, #111) !important;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.devhub-account-content .woocommerce-orders-table__cell-order-number a:hover {
+  color: var(--devhub-account-teal) !important;
+}
+
+/* Date */
+.devhub-account-content .woocommerce-orders-table__cell-order-date {
+  color: #666 !important;
+  white-space: nowrap;
+}
+
+/* Status — plain text, no pill needed for now */
+.devhub-account-content .woocommerce-orders-table__cell-order-status {
+  white-space: nowrap;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table
+  td.woocommerce-orders-table__cell-order-status
+  mark,
+.devhub-account-content
+  .woocommerce-orders-table
+  td.woocommerce-orders-table__cell-order-status
+  .woocommerce-order-status {
+  background: #fff2e8 !important;
+  color: var(--devhub-account-teal) !important;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Total */
+.devhub-account-content .woocommerce-orders-table__cell-order-total {
+  font-weight: 600;
+  color: var(--devhub-account-teal) !important;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table__cell-order-total
+  .woocommerce-Price-amount {
+  color: var(--devhub-account-teal) !important;
+}
+
+/* Actions — View button */
+.devhub-account-content .woocommerce-orders-table__cell-order-actions {
+  white-space: nowrap;
+}
+
+.devhub-account-content .woocommerce-orders-table .woocommerce-button,
+.devhub-account-content .woocommerce-orders-table .button {
+  display: inline-block !important;
+  padding: 7px 18px !important;
+  background: var(--devhub-account-teal) !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: background 0.15s;
+  box-shadow: none !important;
+}
+
+.devhub-account-content .woocommerce-orders-table .woocommerce-button:hover,
+.devhub-account-content .woocommerce-orders-table .button:hover {
+  background: var(--devhub-primary-dark, #e55a00) !important;
+}
+
+.devhub-account-content .woocommerce-orders-table__header-order-actions,
+.devhub-account-content .woocommerce-orders-table__cell-order-actions {
+  width: 88px !important;
+  max-width: 88px !important;
+  text-align: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table__cell-order-actions
+  .woocommerce-button,
+.devhub-account-content .woocommerce-orders-table__cell-order-actions .button {
+  display: table !important;
+  float: none !important;
+  margin: 0 auto !important;
+}
+
+.devhub-account-content .woocommerce-orders-table .woocommerce-button,
+.devhub-account-content .woocommerce-orders-table .button {
+  display: inline-block !important;
+  width: auto;
+  height: auto;
+  padding: 7px 18px !important;
+  background: var(--devhub-account-teal) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  line-height: normal !important;
+  vertical-align: middle;
+  overflow: hidden !important;
+}
+
+.devhub-order-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--devhub-primary) !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  text-decoration: none;
+}
+
+.devhub-order-action-icon:hover {
+  color: var(--devhub-primary) !important;
+  background: none !important;
+}
+
+.devhub-account-content .woocommerce-orders-table thead th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.devhub-account-content .woocommerce-orders-table thead th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table
+  tbody
+  tr:last-child
+  th:first-child,
+.devhub-account-content
+  .woocommerce-orders-table
+  tbody
+  tr:last-child
+  td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.devhub-account-content
+  .woocommerce-orders-table
+  tbody
+  tr:last-child
+  td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+/* ==========================================================================
+   Single order view
+   ========================================================================== */
+
+/* Hide Additional Information section on order details page */
+.wc-block-order-confirmation-additional-fields-wrapper {
+  display: none;
+}
+
+/* Order status notice at the top */
+.devhub-account-content .woocommerce-order > p:first-of-type {
+  font-size: 14px;
+  color: #555;
+  background: #fff2e8;
+  border-left: 3px solid var(--devhub-account-teal);
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* Section headings — Order details / Billing address / Shipping address */
+.devhub-account-content .woocommerce-order-details__title,
+.devhub-account-content .woocommerce-column__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--devhub-dark, #111);
+  margin: 0 0 16px;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* Rounded card wraps only the table, not the section heading */
+.devhub-account-content .devhub-order-table-card {
+  background: #fff;
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* Order details table */
+.devhub-account-content .woocommerce-table--order-details {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff !important;
+  border: none !important;
+  border-radius: 0;
+  overflow: hidden;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.devhub-account-content .woocommerce-table--order-details th,
+.devhub-account-content .woocommerce-table--order-details td {
+  border-top: none !important;
+  border-left: none !important;
+  border-bottom: 1px solid var(--devhub-account-border) !important;
+  border-right: 1px solid var(--devhub-account-border) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.devhub-account-content .woocommerce-table--order-details th:last-child,
+.devhub-account-content .woocommerce-table--order-details td:last-child {
+  border-right: none !important;
+}
+
+.devhub-account-content
+  .woocommerce-table--order-details
+  tbody
+  tr:last-child
+  td,
+.devhub-account-content
+  .woocommerce-table--order-details
+  tfoot
+  tr:last-child
+  th,
+.devhub-account-content
+  .woocommerce-table--order-details
+  tfoot
+  tr:last-child
+  td {
+  border-bottom: none !important;
+}
+
+/* Header */
+.devhub-account-content .woocommerce-table--order-details thead tr {
+  background: #fafafa !important;
+}
+
+.devhub-account-content .woocommerce-table--order-details thead th {
+  padding: 13px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+  text-align: left !important;
+  background: #fafafa !important;
+}
+
+/* Body cells */
+.devhub-account-content .woocommerce-table--order-details tbody td,
+.devhub-account-content .woocommerce-table--order-details tfoot th,
+.devhub-account-content .woocommerce-table--order-details tfoot td {
+  padding: 13px 16px !important;
+  color: #444 !important;
+  vertical-align: middle !important;
+  background: transparent !important;
+}
+
+/* Tfoot labels (Subtotal, Total, Payment method) */
+.devhub-account-content .woocommerce-table--order-details tfoot th {
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+/* Prices in orange */
+.devhub-account-content
+  .woocommerce-table--order-details
+  .woocommerce-Price-amount {
+  color: var(--devhub-account-teal) !important;
+  font-weight: 600;
+}
+
+/* Billing / Shipping address — DeviceHub grid card */
+.devhub-account-content .woocommerce-customer-details {
+  margin-top: 0;
+}
+
+.devhub-order-address-card {
+  background: #fff;
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.devhub-order-address-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--devhub-dark, #111);
+  margin: 0 0 16px;
+  border-bottom: none;
+}
+
+.devhub-order-address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+.devhub-order-address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.devhub-order-address-field__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  letter-spacing: 0.06em;
+}
+
+.devhub-order-address-field__value {
+  font-size: 14px;
+  color: #333;
+}
+
+/* ==========================================================================
+   Addresses page
+   ========================================================================== */
+
+.devhub-addresses__intro {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.devhub-addresses-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.devhub-address-card {
+  background: #fff;
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 100%;
+}
+
+.devhub-address-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--devhub-account-border);
+  background: #fafafa;
+}
+
+.devhub-address-card__heading {
+  min-width: 0;
+}
+
+.devhub-address-card__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--devhub-dark, #111);
+  margin: 0;
+}
+
+.devhub-address-card__meta {
+  margin: 6px 0 0 !important;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #888;
+}
+
+.devhub-address-card__edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--devhub-account-teal);
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.devhub-address-card__edit:hover {
+  text-decoration: underline;
+  color: var(--devhub-account-teal);
+}
+
+.devhub-address-card__body {
+  display: block;
+  padding: 18px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.8;
+  font-style: normal;
+}
+
+.devhub-address-card__details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 20px;
+}
+
+.devhub-address-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.devhub-address-detail.is-wide {
+  grid-column: auto;
+}
+
+.devhub-address-detail__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+.devhub-address-detail__value {
+  font-size: 15px;
+  line-height: 1.55;
+  color: #333;
+  word-break: break-word;
+}
+
+.devhub-address-card__empty {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #777;
+}
+
+/* ==========================================================================
+   Account forms (edit account, edit address)
+   ========================================================================== */
+
+/* Hide hr dividers */
+.devhub-account-content .woocommerce-EditAccountForm hr,
+.devhub-account-content .woocommerce-address-fields hr {
+  display: none !important;
+}
+
+/* Personal info card wrapper */
+.devhub-account-content .devhub-account-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+/* Password fieldset card */
+.devhub-account-content .woocommerce-EditAccountForm fieldset {
+  border: 1px solid var(--devhub-account-border) !important;
+  border-radius: 10px !important;
+  padding: 24px !important;
+  margin: 0 0 20px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 20px 24px !important;
+}
+
+.devhub-account-content .woocommerce-EditAccountForm fieldset legend {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  padding: 0 8px;
+  grid-column: 1 / -1;
+}
+
+/* form-row-first → left, form-row-last → right */
+.devhub-account-content .devhub-account-section .form-row-first,
+.devhub-account-content .devhub-account-section .form-row-last,
+.devhub-account-content .woocommerce-EditAccountForm fieldset .form-row-first,
+.devhub-account-content .woocommerce-EditAccountForm fieldset .form-row-last {
+  grid-column: span 1;
+  float: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* form-row-wide → full width */
+.devhub-account-content .devhub-account-section .form-row-wide,
+.devhub-account-content .woocommerce-EditAccountForm fieldset .form-row-wide {
+  grid-column: 1 / -1;
+  float: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Address fields wrapper */
+.devhub-account-content .woocommerce-address-fields__field-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+  border: 1px solid var(--devhub-account-border);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .form-row-first,
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .form-row-last {
+  grid-column: span 1;
+  float: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .form-row-wide {
+  grid-column: 1 / -1;
+  float: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Edit address page — fix h2 title size */
+.devhub-account-content .woocommerce-address-fields > h2,
+.devhub-account-content form[method="post"] > h2 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  margin: 0 0 20px !important;
+  color: var(--devhub-dark, #111) !important;
+}
+
+/* Country / Region — Select2 override to match other inputs */
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container {
+  width: 100% !important;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container
+  .select2-selection--single {
+  height: 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  border: 1px solid var(--devhub-account-border) !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container
+  .select2-selection--single
+  .select2-selection__rendered,
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered {
+  line-height: normal !important;
+  padding-left: 14px !important;
+  padding-right: 36px !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  font-style: normal !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container
+  .select2-selection--single
+  .select2-selection__arrow {
+  height: 42px !important;
+  right: 10px !important;
+}
+
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container--focus
+  .select2-selection--single,
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  .select2-container--open
+  .select2-selection--single {
+  border-color: var(--devhub-account-teal) !important;
+  outline: none !important;
+}
+
+/* Labels */
+.devhub-account-content .devhub-account-section label,
+.devhub-account-content .woocommerce-EditAccountForm fieldset label,
+.devhub-account-content .woocommerce-address-fields__field-wrapper label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+/* Inputs */
+.devhub-account-content .woocommerce-EditAccountForm input[type="text"],
+.devhub-account-content .woocommerce-EditAccountForm input[type="email"],
+.devhub-account-content .woocommerce-EditAccountForm input[type="password"],
+.devhub-account-content .woocommerce-address-fields__field-wrapper input,
+.devhub-account-content .woocommerce-address-fields__field-wrapper select {
+  width: 100% !important;
+  padding: 10px 14px !important;
+  border: 1px solid var(--devhub-account-border) !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.15s;
+}
+
+.devhub-account-content .woocommerce-EditAccountForm input:focus,
+.devhub-account-content .woocommerce-address-fields__field-wrapper input:focus,
+.devhub-account-content
+  .woocommerce-address-fields__field-wrapper
+  select:focus {
+  border-color: var(--devhub-account-teal) !important;
+  outline: none !important;
+}
+
+/* Display name hint */
+.devhub-account-content .devhub-field-hint {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Submit — right-aligned via flex wrapper */
+.devhub-account-content .devhub-form-submit {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+/* WooCommerce wraps the Save address button in a bare <p> inside .woocommerce-address-fields */
+.devhub-account-content .woocommerce-address-fields > p {
+  text-align: right;
+}
+
+.devhub-account-content .devhub-form-submit [type="submit"],
+.devhub-account-content .woocommerce-address-fields + p [type="submit"],
+.devhub-account-content .woocommerce-address-fields [type="submit"] {
+  display: inline-block !important;
+  padding: 11px 28px !important;
+  background: var(--devhub-account-teal) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.devhub-account-content .devhub-form-submit [type="submit"]:hover {
+  background: var(--devhub-primary-dark, #e55a00) !important;
+}
+
+/* ==========================================================================
+   Orders pagination — matches archive pagination style
+   ========================================================================== */
+
+.devhub-account-content .woocommerce-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.devhub-account-content .woocommerce-pagination ul.page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.devhub-account-content .woocommerce-pagination li > .page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.9rem;
+  height: 3.9rem;
+  padding: 0.2rem 1.2rem;
+  border: 1px solid var(--devhub-border);
+  border-radius: 999px;
+  background: var(--devhub-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--devhub-dark);
+  text-decoration: none;
+  transition:
+    background var(--devhub-transition),
+    border-color var(--devhub-transition),
+    color var(--devhub-transition);
+}
+
+.devhub-account-content .woocommerce-pagination li > .page-numbers i {
+  font-size: 1.3rem;
+}
+
+.devhub-account-content .woocommerce-pagination li > .page-numbers:hover {
+  border-color: var(--devhub-primary);
+  color: var(--devhub-primary);
+}
+
+.devhub-account-content .woocommerce-pagination li > .page-numbers.current {
+  background: var(--devhub-primary);
+  border-color: var(--devhub-primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   Empty state (downloads, orders, etc.)
+   ========================================================================== */
+
+.devhub-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  gap: 28px;
+  text-align: center;
+}
+
+/* Icon stack */
+.devhub-empty-state__icon-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+
+.devhub-empty-state__layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+}
+
+.devhub-empty-state__layer--1 {
+  background: rgba(255, 102, 0, 0.06);
+  transform: rotate(6deg);
+}
+
+.devhub-empty-state__layer--2 {
+  background: rgba(255, 102, 0, 0.09);
+  transform: rotate(-3deg);
+}
+
+.devhub-empty-state__card {
+  position: absolute;
+  inset: 14px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid var(--devhub-account-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  z-index: 1;
+}
+
+.devhub-empty-state__badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: var(--devhub-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(255, 102, 0, 0.35);
+}
+
+/* Text */
+.devhub-empty-state__text {
+  max-width: 380px;
+}
+
+.devhub-empty-state__text h4 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--devhub-dark, #111);
+  margin: 0 0 8px;
+}
+
+.devhub-empty-state__text p {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Buttons */
+.devhub-empty-state__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.devhub-empty-state__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+  cursor: pointer;
+  border: none;
+}
+
+.devhub-empty-state__btn--primary {
+  background: var(--devhub-primary);
+  color: #fff;
+}
+
+.devhub-empty-state__btn--primary:hover {
+  background: var(--devhub-primary-dark, #e55a00);
+  color: #fff;
+}
+
+.devhub-empty-state__btn--outline {
+  background: transparent;
+  color: var(--devhub-dark, #111);
+  border: 1px solid var(--devhub-account-border);
+}
+
+.devhub-empty-state__btn--outline:hover {
+  border-color: var(--devhub-primary);
+  color: var(--devhub-primary);
+}
+
+/* ==========================================================================
+   Typography / Surface Refinement
+   ========================================================================== */
+
+.devhub-auth__card,
+.devhub-account-user-card,
+.devhub-account-nav__item,
+.devhub-dashboard-card,
+.devhub-order-table-card,
+.devhub-order-address-card,
+.devhub-address-card,
+.devhub-account-content .devhub-account-section,
+.devhub-account-content .woocommerce-EditAccountForm fieldset,
+.devhub-account-content .woocommerce-address-fields__field-wrapper {
+  border-color: rgba(228, 231, 236, 0.95) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--devhub-shadow-card);
+}
+
+.devhub-auth__intro h2,
+.devhub-auth__title {
+  font-size: clamp(3rem, 2.5rem + 0.45vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.devhub-auth__intro p,
+.devhub-auth__subtitle,
+.devhub-dashboard__intro,
+.devhub-addresses__intro,
+.devhub-auth__confirmation,
+.devhub-empty-state__text p {
+  font-size: 1.6rem;
+  line-height: 1.75;
+}
+
+.devhub-auth__option,
+.devhub-auth__form .form-row label,
+.devhub-auth__form .form-row input.input-text,
+.devhub-auth__form .form-row select,
+.devhub-auth__submit,
+.devhub-auth__footer,
+.devhub-auth__forgot,
+.devhub-auth__actions .woocommerce-form-login__rememberme,
+.devhub-account-nav__item > a,
+.devhub-account-nav__group-btn,
+.devhub-account-content .woocommerce-orders-table,
+.devhub-account-content .woocommerce-table--order-details,
+.devhub-account-content .woocommerce-EditAccountForm input[type="text"],
+.devhub-account-content .woocommerce-EditAccountForm input[type="email"],
+.devhub-account-content .woocommerce-EditAccountForm input[type="password"],
+.devhub-account-content .woocommerce-address-fields__field-wrapper input,
+.devhub-account-content .woocommerce-address-fields__field-wrapper select,
+.devhub-empty-state__btn {
+  font-size: 1.55rem !important;
+}
+
+.devhub-account-user-name,
+.devhub-address-card__title,
+.devhub-dashboard__title,
+.devhub-account-content .woocommerce-order-details__title,
+.devhub-account-content .woocommerce-column__title,
+.devhub-order-address-card__title,
+.devhub-empty-state__text h4 {
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+
+.devhub-account-user-email,
+.devhub-account-logout,
+.devhub-address-card__meta,
+.devhub-address-card__edit,
+.devhub-account-content .devhub-field-hint,
+.devhub-order-address-field__label,
+.devhub-address-detail__label {
+  font-size: 1.3rem;
+}
+
+.devhub-dashboard-card {
+  padding: 30px 18px 24px;
+}
+
+.devhub-dashboard-card__label {
+  font-size: 1.25rem;
+  letter-spacing: 0.08em;
+}
+
+.devhub-account-content .woocommerce-orders-table thead th,
+.devhub-account-content .woocommerce-table--order-details thead th,
+.devhub-account-content .woocommerce-orders-table tbody td,
+.devhub-account-content .woocommerce-table--order-details tbody td,
+.devhub-account-content .woocommerce-table--order-details tfoot th,
+.devhub-account-content .woocommerce-table--order-details tfoot td,
+.devhub-order-address-field__value,
+.devhub-address-card__body,
+.devhub-address-detail__value,
+.devhub-address-card__empty {
+  font-size: 1.5rem !important;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 960px) {
+  .devhub-account-wrap {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .devhub-account-sidebar {
+    flex: none;
+    width: 100%;
+  }
+
+  .devhub-dashboard-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .woocommerce-account:not(.logged-in) .wf_posts.wf-py-default {
+    padding-top: 28px !important;
+    padding-bottom: 48px !important;
+  }
+
+  .devhub-auth__card {
+    width: 100%;
+    padding: 28px 20px 24px;
+    border-radius: 14px;
+  }
+
+  .devhub-auth__intro h2,
+  .devhub-auth__title {
+    font-size: 24px;
+  }
+
+  .devhub-auth__actions {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .devhub-auth__actions .woocommerce-form-login__rememberme {
+    width: 100%;
+  }
+
+  .devhub-auth__forgot {
+    width: 100%;
+    text-align: left;
+  }
+
+  .devhub-auth__submit {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .devhub-dashboard-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,0 +1,398 @@
+/* ==========================================================================
+   DeviceHub — Archive Page Layout
+   Path: assets/css/archive/devhub-archive.css
+   Depends on: style.css, product-card.css
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Page bar (breadcrumb left, title right)
+   ========================================================================== */
+
+.devhub-page-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0 20px;
+  border-bottom: 1px solid rgba(228, 231, 236, 0.9);
+  margin-bottom: 34px;
+  flex-wrap: wrap;
+}
+
+.devhub-page-bar .woocommerce-breadcrumb {
+  font-size: clamp(1.7rem, 1.2vw, 1.95rem);
+  font-weight: 700;
+  color: var(--devhub-mid);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.devhub-page-bar .woocommerce-breadcrumb a {
+  color: var(--devhub-dark);
+  text-decoration: none;
+}
+
+.devhub-page-bar .woocommerce-breadcrumb a:hover {
+  color: var(--devhub-primary);
+}
+
+.devhub-page-bar__title {
+  font-size: clamp(2rem, 2vw, 2.6rem);
+  font-weight: 700;
+  color: var(--devhub-black);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+}
+
+/* ==========================================================================
+   2. Page wrapper
+   ========================================================================== */
+
+.devhub-archive {
+  padding: 0px 0 64px;
+  background: var(--devhub-white);
+  min-height: 60vh;
+}
+
+/* ==========================================================================
+   2. Page header (title + breadcrumb)
+   ========================================================================== */
+
+.devhub-archive__header {
+  margin-bottom: 28px;
+}
+
+.devhub-archive__title {
+  font-size: var(--devhub-text-4xl);
+  font-weight: 800;
+  color: var(--devhub-black);
+  margin-bottom: 10px;
+}
+
+/* WooCommerce breadcrumb override */
+.devhub-archive .woocommerce-breadcrumb {
+  font-size: clamp(1.7rem, 1.2vw, 1.95rem);
+  font-weight: 700;
+  color: var(--devhub-mid);
+  background: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.devhub-archive .woocommerce-breadcrumb a {
+  color: var(--devhub-dark);
+  text-decoration: none;
+}
+
+.devhub-archive .woocommerce-breadcrumb a:hover {
+  color: var(--devhub-primary);
+}
+
+/* ==========================================================================
+   3. Two-column layout
+   ========================================================================== */
+
+.devhub-archive__layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ==========================================================================
+   4. Sidebar
+   ========================================================================== */
+
+.devhub-archive__sidebar {
+  position: sticky;
+  top: 100px; /* below sticky header */
+}
+
+.devhub-archive__filters {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(228, 231, 236, 0.95);
+  border-radius: calc(var(--devhub-radius-md) + 2px);
+  overflow: hidden;
+  box-shadow: var(--devhub-shadow-card);
+}
+
+/* ==========================================================================
+   5. Toolbar (result count + sort)
+   ========================================================================== */
+
+.devhub-archive__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* WooCommerce result count */
+.devhub-archive__toolbar .woocommerce-result-count {
+  font-size: var(--devhub-text-xl);
+  font-weight: 500;
+  color: var(--devhub-mid);
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* WooCommerce ordering dropdown */
+.devhub-archive__toolbar .woocommerce-ordering {
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+.devhub-archive__toolbar .woocommerce-ordering select,
+.devhub-archive__toolbar .orderby {
+  font-size: var(--devhub-text-md) !important;
+  font-weight: 600;
+  color: var(--devhub-dark) !important;
+  border: 1px solid rgba(228, 231, 236, 0.95) !important;
+  border-radius: var(--devhub-radius-full) !important;
+  padding: 10px 38px 10px 16px !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b6b6b' d='M6 8L1 3h10z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 12px center !important;
+  cursor: pointer;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-shadow: var(--devhub-shadow-card) !important;
+  accent-color: var(--devhub-primary);
+  transition: border-color var(--devhub-transition);
+}
+
+.devhub-archive__toolbar .woocommerce-ordering select:focus,
+.devhub-archive__toolbar .orderby:focus {
+  outline: none !important;
+  border-color: var(--devhub-primary) !important;
+  box-shadow: none !important;
+}
+
+/* Custom sort dropdown */
+.devhub-sort-dropdown {
+  position: relative;
+}
+
+.devhub-sort-dropdown__trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: var(--devhub-text-lg);
+  font-weight: 500;
+  color: var(--devhub-dark);
+  background: var(--devhub-white);
+  border: 1.5px solid var(--devhub-border);
+  border-radius: var(--devhub-radius-full);
+  cursor: pointer;
+  transition: border-color var(--devhub-transition);
+  white-space: nowrap;
+}
+
+.devhub-sort-dropdown__trigger:hover,
+.devhub-sort-dropdown--open .devhub-sort-dropdown__trigger {
+  border-color: var(--devhub-primary);
+  outline: none;
+}
+
+.devhub-sort-dropdown__chevron {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.devhub-sort-dropdown--open .devhub-sort-dropdown__chevron {
+  transform: rotate(180deg);
+}
+
+.devhub-sort-dropdown__list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--devhub-white);
+  border: 1.5px solid var(--devhub-border);
+  border-radius: var(--devhub-radius-md);
+  box-shadow: var(--devhub-shadow-hover);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s ease;
+  z-index: 100;
+}
+
+.devhub-sort-dropdown--open .devhub-sort-dropdown__list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.devhub-sort-dropdown__item {
+  padding: 8px 16px;
+  font-size: var(--devhub-text-lg);
+  color: var(--devhub-dark);
+  cursor: pointer;
+  transition:
+    background var(--devhub-transition),
+    color var(--devhub-transition);
+}
+
+.devhub-sort-dropdown__item:hover {
+  background: #fff5f0;
+  color: var(--devhub-primary);
+}
+
+.devhub-sort-dropdown__item--active {
+  color: var(--devhub-primary);
+  font-weight: 600;
+  background: #fff5f0;
+}
+
+/* ==========================================================================
+   6. Product grid
+   ========================================================================== */
+
+.devhub-archive__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Match card text sizes to homepage product section */
+.devhub-archive__grid .devhub-product-card__name {
+  font-size: var(--devhub-text-3xl);
+}
+
+.devhub-archive__grid .devhub-product-card__price {
+  font-size: var(--devhub-text-4xl);
+}
+
+.devhub-archive__grid .devhub-product-card__price del {
+  font-size: var(--devhub-text-xl);
+}
+
+.devhub-archive__grid .devhub-product-card__stock {
+  font-size: var(--devhub-text-lg);
+}
+
+.devhub-archive__grid .devhub-product-card__badge {
+  font-size: var(--devhub-text-xl);
+}
+
+/* ==========================================================================
+   7. Pagination
+   ========================================================================== */
+
+.devhub-archive__pagination {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+/* WooCommerce pagination */
+.devhub-archive__pagination .woocommerce-pagination ul.page-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.devhub-archive__pagination .woocommerce-pagination li > .page-numbers {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.9rem;
+  height: 3.9rem;
+  padding: 0.2rem 1.2rem;
+  border: 1px solid var(--devhub-border);
+  border-radius: 999px;
+  background: var(--devhub-white);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--devhub-dark);
+  text-decoration: none;
+  transition:
+    background var(--devhub-transition),
+    border-color var(--devhub-transition),
+    color var(--devhub-transition);
+}
+
+.devhub-archive__pagination .woocommerce-pagination li > .page-numbers i {
+  font-size: 1.3rem;
+}
+
+.devhub-archive__pagination .woocommerce-pagination li > .page-numbers:hover {
+  border-color: var(--devhub-primary);
+  color: var(--devhub-primary);
+}
+
+.devhub-archive__pagination .woocommerce-pagination li > .page-numbers.current {
+  background: var(--devhub-primary);
+  border-color: var(--devhub-primary);
+  color: var(--devhub-white);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   8. Empty state
+   ========================================================================== */
+
+.devhub-archive__main .woocommerce-info {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid var(--devhub-border);
+  border-left: 4px solid var(--devhub-primary);
+  border-radius: calc(var(--devhub-radius-md) + 2px);
+  padding: 18px 22px;
+  font-size: var(--devhub-text-md);
+  color: var(--devhub-mid);
+  box-shadow: var(--devhub-shadow-card);
+}
+
+/* ==========================================================================
+   9. Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .devhub-archive__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .devhub-archive__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .devhub-archive__sidebar {
+    position: static;
+  }
+
+  .devhub-archive__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .devhub-archive__grid {
+    grid-template-columns: 1fr;
+  }
+}

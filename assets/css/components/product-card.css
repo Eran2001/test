@@ -1,0 +1,193 @@
+/* ==========================================================================
+   DeviceHub — Product Card Component
+   Path: assets/css/components/product-card.css
+   Depends on: global.css
+
+   This is the shared card used on: home sections, archive, search results.
+   Do NOT put grid layout here — that belongs in the page-level CSS.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Card shell
+   ========================================================================== */
+
+.devhub-product-card {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(251, 251, 252, 0.98));
+  border: 1px solid rgba(228, 231, 236, 0.95);
+  border-radius: calc(var(--devhub-radius-md) + 2px);
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--devhub-shadow-card);
+  transition:
+    border-color var(--devhub-transition),
+    box-shadow var(--devhub-transition),
+    transform var(--devhub-transition);
+}
+
+.devhub-product-card:hover {
+  border-color: rgba(255, 102, 0, 0.2);
+  box-shadow: var(--devhub-shadow-hover);
+  transform: translateY(-6px);
+}
+
+.devhub-product-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 72px;
+  background: linear-gradient(180deg, rgba(255, 102, 0, 0.06), transparent);
+  opacity: 0;
+  transition: opacity var(--devhub-transition-slow);
+  pointer-events: none;
+}
+
+.devhub-product-card:hover::before {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   2. Badge
+   ========================================================================== */
+
+.devhub-product-card__badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--devhub-primary);
+  color: var(--devhub-white);
+  font-size: var(--devhub-text-md);
+  font-weight: 700;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--devhub-radius-full);
+  z-index: 1;
+  box-shadow: 0 10px 18px rgba(255, 102, 0, 0.22);
+}
+
+/* ==========================================================================
+   3. Image
+   ========================================================================== */
+
+.devhub-product-card__img-wrap {
+  display: block;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  border-radius: calc(var(--devhub-radius-md) - 2px);
+  background:
+    radial-gradient(circle at top, rgba(255, 102, 0, 0.08), transparent 58%),
+    var(--devhub-surface);
+  margin-bottom: 14px;
+}
+
+.devhub-product-card__img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 12px;
+  transition: transform var(--devhub-transition-slow);
+}
+
+.devhub-product-card:hover .devhub-product-card__img-wrap img {
+  transform: scale(1.06) translateY(-2px);
+}
+
+.devhub-product-card__img-placeholder {
+  width: 100%;
+  height: 100%;
+  background: var(--devhub-bg);
+}
+
+/* ==========================================================================
+   4. Body
+   ========================================================================== */
+
+.devhub-product-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.devhub-product-card__name {
+  font-size: var(--devhub-text-xl);
+  font-weight: 700;
+  color: var(--devhub-black);
+  line-height: 1.45;
+  /* Clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.devhub-product-card__name:hover {
+  color: var(--devhub-primary);
+}
+
+.devhub-product-card__bundle {
+  display: inline-block;
+  background: var(--devhub-primary-soft);
+  color: var(--devhub-primary);
+  font-size: var(--devhub-text-sm);
+  font-weight: 600;
+  padding: 0.5rem 0.85rem;
+  border-radius: var(--devhub-radius-full);
+  border: 1px solid rgba(255, 102, 0, 0.14);
+  width: fit-content;
+}
+
+.devhub-product-card__price {
+  font-size: var(--devhub-text-2xl);
+  font-weight: 700;
+  color: var(--devhub-black);
+}
+
+.devhub-product-card__price-prefix {
+  font-size: 0.56em;
+  font-weight: 700;
+  color: var(--devhub-mid);
+  margin-right: 0.2em;
+  white-space: nowrap;
+}
+
+.devhub-product-card__price del {
+  font-size: var(--devhub-text-lg);
+  color: var(--devhub-light);
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+.devhub-product-card__price ins {
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   5. Stock status
+   ========================================================================== */
+
+.devhub-product-card__stock {
+  font-size: var(--devhub-text-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Dot indicator */
+.devhub-product-card__stock::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.devhub-product-card__stock--in {
+  color: var(--devhub-success);
+}
+.devhub-product-card__stock--out {
+  color: var(--devhub-danger);
+}

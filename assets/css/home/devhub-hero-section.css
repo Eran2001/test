@@ -1,0 +1,389 @@
+/* ==========================================================================
+   DeviceHub — Hero Section
+   Path: assets/css/home/devhub-hero-section.css
+   Depends on: style.css (tokens)
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Layout
+   ========================================================================== */
+
+/* Stick hero flush to header — no top/bottom section padding */
+.devhub-hero {
+  --devhub-hero-category-width: 300px;
+  --devhub-hero-edge-offset: max(
+    20px,
+    calc((100vw - min(100vw, var(--devhub-container))) / 2 + var(--devhub-page-gutter))
+  );
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 32px;
+}
+
+.devhub-hero > .wf-container {
+  width: 100%;
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.devhub-hero__inner {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+/* Categories sidebar */
+.devhub-hero__categories {
+  position: absolute;
+  top: 0;
+  left: var(--devhub-hero-edge-offset);
+  z-index: 12;
+  width: var(--devhub-hero-category-width);
+  min-width: var(--devhub-hero-category-width);
+  max-width: calc(100vw - 32px);
+}
+
+.devhub-hero__cat-header {
+  background: var(--devhub-primary);
+  color: var(--devhub-white);
+  padding: 16px 20px;
+  font-family: var(--devhub-font-heading);
+  font-size: var(--devhub-text-xl);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 10px 24px rgba(17, 17, 17, 0.12);
+  transition:
+    box-shadow 0.28s ease,
+    transform 0.28s ease;
+}
+
+.devhub-hero__cat-toggle {
+  margin-left: auto;
+  font-size: var(--devhub-text-sm);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.devhub-hero__categories.is-collapsed .devhub-hero__cat-toggle {
+  transform: rotate(180deg);
+}
+
+.devhub-hero__categories:hover .devhub-hero__cat-header {
+  box-shadow: 0 14px 30px rgba(17, 17, 17, 0.18);
+}
+
+.devhub-hero__cat-list {
+  margin: 0;
+  padding: 0;
+  background: var(--devhub-white);
+  border: 1px solid var(--devhub-border);
+  border-top: none;
+  box-shadow: 0 18px 36px rgba(17, 17, 17, 0.12);
+  overflow: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transform-origin: top;
+  transition:
+    height 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.22s ease,
+    transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.34s ease;
+}
+
+.devhub-hero__categories.is-collapsed .devhub-hero__cat-list {
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  box-shadow: 0 8px 18px rgba(17, 17, 17, 0.06);
+}
+
+.devhub-hero__categories.is-animating .devhub-hero__cat-list {
+  overflow: hidden;
+}
+
+.devhub-hero__cat-item {
+  position: relative;
+}
+
+.devhub-hero__cat-item > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 20px;
+  font-family: var(--devhub-font-heading);
+  font-size: var(--devhub-text-xl);
+  font-weight: 600;
+  color: var(--devhub-dark);
+  border-bottom: 1px solid var(--devhub-border);
+  transition:
+    background var(--devhub-transition),
+    color var(--devhub-transition);
+}
+
+.devhub-hero__cat-item > a i {
+  font-size: var(--devhub-text-xs);
+  color: var(--devhub-mid);
+  transition:
+    color var(--devhub-transition),
+    transform 0.24s ease;
+}
+
+.devhub-hero__cat-item > a:hover {
+  background: var(--devhub-bg);
+  color: var(--devhub-primary);
+}
+
+.devhub-hero__cat-item > a:hover i {
+  color: var(--devhub-primary);
+  transform: translateX(3px);
+}
+
+/* Subcategory flyout */
+.devhub-hero__cat-sub {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  min-width: 180px;
+  background: var(--devhub-white);
+  border: 1px solid var(--devhub-border);
+  box-shadow: var(--devhub-shadow-hover);
+  z-index: 100;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(14px, 0, 0) scale(0.98);
+  transform-origin: left center;
+  transition:
+    opacity 0.2s ease,
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.24s;
+}
+
+.devhub-hero__cat-item:hover .devhub-hero__cat-sub,
+.devhub-hero__cat-item:focus-within .devhub-hero__cat-sub {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition-delay: 0s;
+}
+
+.devhub-hero__cat-sub li a {
+  display: block;
+  padding: 12px 16px;
+  font-family: var(--devhub-font-heading);
+  font-size: var(--devhub-text-lg);
+  font-weight: 500;
+  color: var(--devhub-dark);
+  border-bottom: 1px solid var(--devhub-border);
+  transition:
+    color var(--devhub-transition),
+    background var(--devhub-transition);
+}
+
+.devhub-hero__cat-sub li a:hover {
+  color: var(--devhub-primary);
+  background: var(--devhub-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .devhub-hero__cat-header,
+  .devhub-hero__cat-toggle,
+  .devhub-hero__cat-list,
+  .devhub-hero__cat-item > a i,
+  .devhub-hero__cat-sub {
+    transition: none;
+  }
+}
+
+/* Banner */
+.devhub-hero__banner {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--devhub-white);
+  min-width: 0;
+}
+
+.devhub-hero__slider {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.devhub-hero__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.devhub-hero__track {
+  display: flex;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+
+.devhub-hero__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+.devhub-hero__slide-media {
+  height: auto;
+  min-height: 0;
+  background: var(--devhub-white);
+}
+
+.devhub-hero__slide-image {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.devhub-hero__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 8;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(255, 102, 0, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--devhub-primary);
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  opacity: 1 !important;
+  visibility: visible !important;
+  box-shadow:
+    0 14px 30px rgba(17, 17, 17, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.7);
+  transition:
+    background-color var(--devhub-transition),
+    color var(--devhub-transition),
+    opacity var(--devhub-transition),
+    transform var(--devhub-transition);
+}
+
+.devhub-hero__arrow:hover:not(:disabled) {
+  background: var(--devhub-primary);
+  color: var(--devhub-white);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.devhub-hero__arrow:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.devhub-hero__arrow--prev {
+  left: max(18px, var(--devhub-hero-edge-offset));
+}
+
+.devhub-hero__arrow--next {
+  right: max(18px, var(--devhub-hero-edge-offset));
+}
+
+.devhub-hero__dots {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.devhub-hero__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  transition:
+    width var(--devhub-transition),
+    background-color var(--devhub-transition),
+    border-color var(--devhub-transition);
+}
+
+.devhub-hero__dot.is-active {
+  width: 28px;
+  background: var(--devhub-primary);
+  border-color: var(--devhub-primary);
+}
+
+.devhub-hero__empty {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #f7f7f7;
+  border: 1px dashed var(--devhub-border);
+  color: var(--devhub-mid);
+  text-align: center;
+}
+
+/* ==========================================================================
+   2. Typography
+   ========================================================================== */
+
+/* ==========================================================================
+   3. Responsive
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  .devhub-hero__categories {
+    display: none;
+  }
+
+  .devhub-hero__arrow--prev {
+    left: 18px;
+  }
+
+  .devhub-hero__arrow--next {
+    right: 18px;
+  }
+
+  .devhub-hero__empty {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 767px) {
+  .devhub-hero {
+    margin-bottom: 24px;
+  }
+
+  .devhub-hero__arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .devhub-hero__arrow--prev {
+    left: 12px;
+  }
+
+  .devhub-hero__arrow--next {
+    right: 12px;
+  }
+
+  .devhub-hero__dots {
+    bottom: 12px;
+  }
+
+  .devhub-hero__empty {
+    min-height: 220px;
+  }
+}
