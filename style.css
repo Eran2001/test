@@ -1255,3 +1255,8 @@ a.wp-block-button__link:focus {
   font-weight: 800 !important;
   color: var(--devhub-primary) !important;
 }
+
+/* Prevent short-content pages (T&C, Privacy Policy, etc.) from pulling the footer up */
+.page-template-default .wf_posts.wf-py-default {
+  min-height: calc(100vh - 80px);
+}

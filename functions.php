@@ -35,6 +35,7 @@ require_once DEVHUB_INC_DIR . '/helpers.php';     // Reusable utility functions 
 require_once DEVHUB_INC_DIR . '/hooks.php';       // All add_action / remove_action overrides
 require_once DEVHUB_INC_DIR . '/checkout-delivery.php'; // Block checkout delivery method UI/data
 require_once DEVHUB_INC_DIR . '/checkout-auth.php'; // Block checkout auth gate for unauthenticated users
+require_once DEVHUB_INC_DIR . '/checkout-receipt.php'; // Order-received page invoice download button
 require_once DEVHUB_INC_DIR . '/mobile-auth.php'; // Mobile OTP auth handlers for phone signup/login
 require_once DEVHUB_INC_DIR . '/email-registration-otp.php'; // Email OTP verification for account creation
 require_once DEVHUB_INC_DIR . '/payment-support.php'; // WooCommerce-driven payment methods + retry handling

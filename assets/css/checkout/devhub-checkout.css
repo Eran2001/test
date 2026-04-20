@@ -8,6 +8,12 @@
   display: none;
 }
 
+/* Hide the "Actions" row in the order details table (invoice btn shown in thank-you banner instead) */
+.order-actions--heading,
+tr:has(.order-actions--heading) {
+  display: none;
+}
+
 /* Order summary sidebar — remove left padding gap */
 .wc-block-checkout__sidebar {
   padding-left: 0 !important;
@@ -2025,4 +2031,45 @@
   color: #666;
   margin-top: 3px;
   line-height: 1.4;
+}
+
+/* Terms & Conditions checkbox — always orange links */
+.wp-block-woocommerce-checkout-terms-block a,
+.wc-block-checkout__terms a {
+  color: var(--color-primary, #ff6600) !important;
+}
+
+/* Order received — thank you banner: flex row so button sits on the right */
+.wc-block-order-confirmation-status p {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0;
+}
+
+/* Invoice download button */
+#devhub-download-invoice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 10px 20px;
+  background: var(--devhub-primary, #ff6600);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 100px;
+  text-decoration: none;
+}
+
+#devhub-download-invoice-btn:hover,
+#devhub-download-invoice-btn:active,
+#devhub-download-invoice-btn:visited,
+#devhub-download-invoice-btn:focus {
+  background: var(--devhub-primary, #ff6600);
+  color: #fff;
+  text-decoration: none;
 }

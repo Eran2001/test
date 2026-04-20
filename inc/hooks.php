@@ -468,3 +468,35 @@ function devhub_add_bundle_package_fees( $cart ): void {
 		$cart->add_fee( $label, $amount, false );
 	}
 }
+
+
+// ── Checkout — Terms & Conditions checkbox text (FR-13) ───────────────────────
+// WooCommerce Blocks (block checkout) stores its terms text as page content, so
+// the classic `woocommerce_get_terms_and_conditions_checkbox_text` filter is
+// ignored. We use `render_block` to post-process the rendered HTML and inject a
+// Privacy Policy link wherever the plain text appears unlinked.
+
+add_filter( 'render_block_woocommerce/checkout-terms-block', 'devhub_terms_block_inject_pp_link' );
+
+function devhub_terms_block_inject_pp_link( string $block_content ): string {
+	$pp_page_id = (int) get_option( 'wp_page_for_privacy_policy' );
+
+	if ( $pp_page_id <= 0 ) {
+		return $block_content;
+	}
+
+	$pp_url = get_permalink( $pp_page_id );
+
+	if ( empty( $pp_url ) ) {
+		return $block_content;
+	}
+
+	// Only replace plain-text "Privacy Policy" that is NOT already inside an <a>.
+	$replacement = '<a href="' . esc_url( $pp_url ) . '" target="_blank" rel="noopener noreferrer">Privacy Policy</a>';
+
+	return preg_replace(
+		'/(?<!">)(?<!\/>)Privacy Policy(?!<\/a>)/',
+		$replacement,
+		$block_content
+	);
+}
