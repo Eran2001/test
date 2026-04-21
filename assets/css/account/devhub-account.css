@@ -2005,3 +2005,59 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Shipment tracking card on view-order page */
+.devhub-tracking-info {
+  margin-bottom: 24px;
+}
+
+.devhub-tracking-info h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--devhub-dark, #111);
+  margin: 0 0 12px;
+}
+
+.devhub-tracking-info__card {
+  background: #fff;
+  border: 1px solid rgba(228, 231, 236, 0.95);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--devhub-shadow-card);
+}
+
+.devhub-tracking-info__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  gap: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.devhub-tracking-info__row:last-child {
+  border-bottom: none;
+}
+
+.devhub-tracking-info__label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #222;
+  flex-shrink: 0;
+}
+
+.devhub-tracking-info__value {
+  font-size: 1.5rem;
+  color: #444;
+  text-align: right;
+}
+
+.devhub-tracking-info__value a {
+  color: var(--devhub-primary, #ff6600);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.devhub-tracking-info__value a:hover {
+  text-decoration: underline;
+}

@@ -63,6 +63,38 @@ echo wp_kses_post(
 </p>
 */ ?>
 
+<?php
+$devhub_tracking_number = sanitize_text_field( (string) $order->get_meta( 'tracking_code', true ) );
+$devhub_courier_name    = sanitize_text_field( (string) $order->get_meta( 'courier_name', true ) );
+$devhub_tracking_url    = esc_url( (string) $order->get_meta( 'tracking_link', true ) );
+?>
+
+<?php if ( '' !== $devhub_tracking_number ) : ?>
+<section class="devhub-tracking-info">
+	<h2><?php esc_html_e( 'Shipment Tracking', 'devicehub-theme' ); ?></h2>
+	<div class="devhub-tracking-info__card">
+		<?php if ( '' !== $devhub_courier_name ) : ?>
+		<div class="devhub-tracking-info__row">
+			<span class="devhub-tracking-info__label"><?php esc_html_e( 'Courier', 'devicehub-theme' ); ?></span>
+			<span class="devhub-tracking-info__value"><?php echo esc_html( $devhub_courier_name ); ?></span>
+		</div>
+		<?php endif; ?>
+		<div class="devhub-tracking-info__row">
+			<span class="devhub-tracking-info__label"><?php esc_html_e( 'Tracking number', 'devicehub-theme' ); ?></span>
+			<span class="devhub-tracking-info__value">
+				<?php if ( '' !== $devhub_tracking_url ) : ?>
+					<a href="<?php echo $devhub_tracking_url; ?>" target="_blank" rel="noopener noreferrer">
+						<?php echo esc_html( $devhub_tracking_number ); ?>
+					</a>
+				<?php else : ?>
+					<?php echo esc_html( $devhub_tracking_number ); ?>
+				<?php endif; ?>
+			</span>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
 <section class="devhub-order-stage-summary">
 	<?php if ( '' !== $devhub_order_stage_label ) : ?>
 		<p>
