@@ -2061,3 +2061,8 @@
 .devhub-tracking-info__value a:hover {
   text-decoration: underline;
 }
+
+/* Hide plugin bundle block — clean entry rendered via WC meta system */
+dl.dh-order-pkg {
+  display: none;
+}

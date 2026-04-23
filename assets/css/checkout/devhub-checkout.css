@@ -938,11 +938,22 @@ tr:has(.order-actions--heading) {
   outline: none !important;
 }
 
+.wc-block-checkout-empty {
+  text-align: center !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  box-sizing: border-box !important;
+}
+
 .wc-block-checkout-empty .wc-block-checkout-empty__description {
   max-width: 68rem;
-  margin-right: auto;
-  margin-left: auto;
-  text-align: center;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  text-align: center !important;
 }
 
 .wc-block-checkout-empty .wp-block-button {
@@ -2046,6 +2057,44 @@ tr:has(.order-actions--heading) {
   justify-content: space-between;
   gap: 16px;
   margin: 0;
+}
+
+/* Terms & Conditions validation error — mirrors .wc-block-components-validation-error */
+.devhub-terms-error {
+  color: var(--devhub-danger);
+  font-size: var(--wp--preset--font-size--small, 14px);
+  line-height: 1.4;
+  max-width: 100%;
+  min-height: 1em;
+  padding: 8px 0 0;
+  white-space: normal;
+}
+
+.devhub-terms-error > p {
+  align-items: center;
+  display: flex;
+  gap: 2px;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.devhub-terms-error > p > svg {
+  fill: currentColor;
+  flex-shrink: 0;
+  height: 1.5em;
+  margin: -0.4735em 0;
+  width: 1.5em;
+}
+
+/* Hide payment method from order confirmation summary */
+li.woocommerce-order-overview__payment-method {
+  display: none !important;
+}
+
+/* Hide plugin's bundle block — we render our own clean line via WC meta system */
+dl.dh-order-pkg {
+  display: none;
 }
 
 /* Invoice download button */

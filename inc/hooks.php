@@ -443,9 +443,10 @@ add_filter( 'woocommerce_get_item_data', function ( array $item_data, array $car
 }, 20, 2 );
 
 // ── Bundle package — clean up order detail display (UI only, data untouched) ──
-// WooCommerce auto-saves all cart item meta as order item meta, so all raw
-// devicehub_* keys appear in the order received / view-order pages. We hide
-// them all and inject one clean "Bundle Package: Name — price LKR" line.
+// The plugin's OrderPackageHandler renders its own dl.dh-order-pkg block via
+// woocommerce_order_item_meta_end. We hide that block via CSS and instead show
+// one clean "Bundle Package: Name — price LKR" line via the standard WC meta
+// system. Raw devicehub_* keys are hidden so they don't appear as extra rows.
 
 add_filter( 'woocommerce_hidden_order_itemmeta', function( array $hidden ): array {
 	return array_merge( $hidden, [
@@ -463,6 +464,13 @@ add_filter( 'woocommerce_hidden_order_itemmeta', function( array $hidden ): arra
 } );
 
 add_filter( 'woocommerce_order_item_get_formatted_meta_data', function( array $meta_data, $item ): array {
+	// On frontend order-received and account view-order pages the bundle already
+	// appears as its own fee line item, so skip injecting it into the product meta.
+	if ( ! is_admin() && function_exists( 'is_wc_endpoint_url' ) &&
+		( is_wc_endpoint_url( 'order-received' ) || is_wc_endpoint_url( 'view-order' ) ) ) {
+		return $meta_data;
+	}
+
 	$display_name = $item->get_meta( 'devicehub_package_display_name' );
 	if ( ! $display_name ) {
 		return $meta_data;

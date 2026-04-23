@@ -881,6 +881,44 @@
 			} );
 	}
 
+	function enforceTermsMessage() {
+		const placeOrderBtn = document.querySelector( PLACE_ORDER_SELECTOR );
+		if ( ! placeOrderBtn ) return;
+
+		placeOrderBtn.addEventListener( 'click', () => {
+			const termsBlock = document.querySelector( '.wc-block-checkout__terms' );
+			if ( ! termsBlock ) return;
+
+			const checkbox = termsBlock.querySelector( 'input[type="checkbox"]' );
+			const existing = termsBlock.querySelector( '.devhub-terms-error' );
+
+			if ( checkbox && ! checkbox.checked ) {
+				if ( ! existing ) {
+					const wrapper = document.createElement( 'div' );
+					wrapper.className = 'devhub-terms-error';
+					wrapper.setAttribute( 'role', 'alert' );
+					const p = document.createElement( 'p' );
+					p.innerHTML =
+						'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+						'<path d="M12 3.2c-4.8 0-8.8 3.9-8.8 8.8 0 4.8 3.9 8.8 8.8 8.8 4.8 0 8.8-3.9 8.8-8.8 0-4.8-4-8.8-8.8-8.8zm0 16c-4 0-7.2-3.3-7.2-7.2C4.8 8 8 4.8 12 4.8s7.2 3.3 7.2 7.2c0 4-3.2 7.2-7.2 7.2zM11 17v-6h1.5v6H11zm0-8V7.5h1.5V9H11z"/>' +
+						'</svg>' +
+						'Please accept the Terms and Conditions to continue.';
+					wrapper.appendChild( p );
+					termsBlock.appendChild( wrapper );
+				}
+			} else if ( existing ) {
+				existing.remove();
+			}
+
+			if ( checkbox ) {
+				checkbox.addEventListener( 'change', () => {
+					const err = termsBlock.querySelector( '.devhub-terms-error' );
+					if ( err ) err.remove();
+				}, { once: true } );
+			}
+		} );
+	}
+
 	function boot() {
 		if ( ! document.querySelector( '.wc-block-checkout, .wp-block-woocommerce-checkout' ) ) {
 			return;
@@ -901,6 +939,7 @@
 		relabelAddressBlocks();
 		moveOrderNoteStep();
 		movePaymentStep();
+		enforceTermsMessage();
 
 		if ( ! hasBoundViewportListener ) {
 			hasBoundViewportListener = true;
@@ -929,11 +968,58 @@
 		} );
 	}
 
+	function enhanceOrderConfirmationDate() {
+		if ( ! window.devhubOrderTime ) return true;
+
+		const dateEl = document.querySelector(
+			'li.woocommerce-order-overview__date strong'
+		);
+		if ( ! dateEl ) return false;
+		if ( dateEl.dataset.devhubEnhanced ) return true;
+
+		dateEl.textContent = dateEl.textContent + ', ' + window.devhubOrderTime;
+
+		// Rename the label — could be a text node or a <p> child
+		const dateLi = dateEl.closest( 'li.woocommerce-order-overview__date' );
+		if ( dateLi ) {
+			// WC Blocks: label in a <p> child
+			const titleP = dateLi.querySelector( 'p' );
+			if ( titleP ) {
+				titleP.textContent = 'Date & Time:';
+			} else {
+				// Classic template: label is a raw text node
+				for ( const node of dateLi.childNodes ) {
+					if ( node.nodeType === Node.TEXT_NODE && node.textContent.trim() ) {
+						node.textContent = ' Date & Time: ';
+						break;
+					}
+				}
+			}
+		}
+
+		dateEl.dataset.devhubEnhanced = '1';
+		return true;
+	}
+
+	function initOrderConfirmationDate() {
+		if ( enhanceOrderConfirmationDate() ) return;
+		const observer = new MutationObserver( () => {
+			if ( enhanceOrderConfirmationDate() ) {
+				observer.disconnect();
+			}
+		} );
+		observer.observe( document.body, { childList: true, subtree: true } );
+	}
+
 	syncSidebarRelocationState();
 
 	if ( document.readyState === 'loading' ) {
-		document.addEventListener( 'DOMContentLoaded', boot );
+		document.addEventListener( 'DOMContentLoaded', () => {
+			boot();
+			initOrderConfirmationDate();
+		} );
 	} else {
 		boot();
+		initOrderConfirmationDate();
 	}
 }() );
