@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Strict Scope Rule
+
+**Only modify files inside this theme directory (`devicehub-theme-dev/`).** Never edit files in plugins, the parent theme (Shopire), or anywhere else outside this theme. If a change requires touching a plugin or parent theme file, implement it via WordPress hooks/filters inside this theme instead (e.g. `inc/hooks.php`).
+
 ## Overview
 
 DeviceHub Theme is a custom WordPress WooCommerce theme for HUTCH Device Hub, built as a child of the Shopire parent theme (WPFable). It targets Sri Lankan e-commerce (LKR currency). No build pipeline — all CSS/JS are served directly.

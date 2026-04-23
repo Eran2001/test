@@ -161,6 +161,10 @@ add_action('devhub_categories_section', 'devhub_render_categories_section');
 
 function devhub_render_categories_section(): void
 {
+    if ( ! function_exists( 'devhub_get_cat_showcase_items' ) ) {
+        return;
+    }
+
     $items = devhub_get_cat_showcase_items();
 
     if (empty($items)) {

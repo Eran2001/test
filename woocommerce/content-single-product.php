@@ -322,7 +322,12 @@ $specs_is_active = !$has_features_tab && $has_specs_tab;
                 <?php if (!empty($bundles)): ?>
                     <div class="devhub-single__bundles">
                         <p class="devhub-single__option-label">
-                            <?php echo esc_html($bundle_ui_label ?: __('Optional Bundle Packages', 'devicehub-theme')); ?>
+                            <?php
+                            $default_bundle_label = $bundle_required
+                                ? __('Bundle Packages', 'devicehub-theme')
+                                : __('Optional Bundle Packages', 'devicehub-theme');
+                            echo esc_html($bundle_ui_label ?: $default_bundle_label);
+                            ?>
                         </p>
                         <?php if ($bundle_help_text !== ''): ?>
                             <p class="devhub-single__bundle-help"><?php echo esc_html($bundle_help_text); ?></p>
@@ -345,25 +350,17 @@ $specs_is_active = !$has_features_tab && $has_specs_tab;
                                                 <div class="devhub-single__bundle-icon" aria-hidden="true">
                                                     <i class="fas fa-box-open"></i>
                                                 </div>
-                                                <span class="devhub-single__bundle-name">
+                                                <span class="devhub-single__bundle-name"
+                                                    title="<?php echo esc_attr($bundle['name']); ?>">
                                                     <?php echo esc_html($bundle['name']); ?>
                                                 </span>
                                             </div>
-                                            <?php if ($bundle['description'] !== '' || $bundle['package_code'] !== ''): ?>
+                                            <?php if ($bundle['description'] !== ''): ?>
                                                 <div class="devhub-single__bundle-meta">
-                                                    <?php if ($bundle['description'] !== ''): ?>
-                                                        <p class="devhub-single__bundle-desc">
-                                                            <?php echo esc_html($bundle['description']); ?>
-                                                        </p>
-                                                    <?php endif; ?>
-                                                    <?php if ($bundle['package_code'] !== ''): ?>
-                                                        <div class="devhub-single__bundle-row">
-                                                            <span
-                                                                class="devhub-single__bundle-meta-key"><?php esc_html_e('Package code', 'devicehub-theme'); ?></span>
-                                                            <span
-                                                                class="devhub-single__bundle-meta-val"><?php echo esc_html($bundle['package_code']); ?></span>
-                                                        </div>
-                                                    <?php endif; ?>
+                                                    <p class="devhub-single__bundle-desc"
+                                                        title="<?php echo esc_attr($bundle['description']); ?>">
+                                                        <?php echo esc_html($bundle['description']); ?>
+                                                    </p>
                                                 </div>
                                             <?php endif; ?>
                                             <div class="devhub-single__bundle-footer">

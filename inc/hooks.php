@@ -278,6 +278,7 @@ function devhub_buy_now_redirect(string $url): string
 }
 
 
+
 // Override LKR currency symbol to display as 'LKR' instead of රු
 add_filter('woocommerce_currency_symbol', function (string $symbol, string $currency): string {
     if ($currency === 'LKR')
@@ -410,20 +411,83 @@ add_filter( 'nsl_googlelast_location_redirect', 'devhub_nsl_checkout_redirect', 
 // delivery fee) so the package price is visible and included in the order total.
 // Uses raw meta key strings so the theme has no hard dependency on the plugin.
 
-// ── Bundle package — fix garbled em dash in cart item display ─────────────────
-// The plugin builds "Plan Name — price LKR" using a UTF-8 em dash. On some
-// DB/charset setups those bytes render as â€" in the browser. We intercept
-// the item data at priority 20 (after the plugin's priority 10) and swap the
-// UTF-8 em dash bytes for a plain ASCII hyphen before output.
+// ── Bundle package — simplify cart item display to "Bundle Package: Plan Name" ─
+// The plugin outputs the full "Plan Name — price LKR / billing label" line plus
+// a second description row. We intercept at priority 20 (after the plugin's 10)
+// and reduce it to just the display name, dropping price and description rows.
 
-add_filter( 'woocommerce_get_item_data', function ( array $item_data ): array {
-	foreach ( $item_data as &$row ) {
-		if ( isset( $row['value'] ) && is_string( $row['value'] ) ) {
-			$row['value'] = str_replace( "\xe2\x80\x94", ' - ', $row['value'] );
+add_filter( 'woocommerce_get_item_data', function ( array $item_data, array $cart_item ): array {
+	$has_bundle   = isset( $cart_item['devicehub_package_id'] );
+	$display_name = $cart_item['devicehub_package_display_name'] ?? '';
+	$bundle_key   = __( 'Bundle Package', 'devicehub-bundlepackage' );
+	$other_rows   = [];
+	$bundle_rows  = [];
+
+	foreach ( $item_data as $row ) {
+		$key = $row['key'] ?? null;
+
+		if ( $key === $bundle_key ) {
+			// Simplify to just the plan name; always move to end.
+			if ( '' !== $display_name ) {
+				$bundle_rows[] = [ 'key' => $bundle_key, 'value' => $display_name ];
+			}
+		} elseif ( $has_bundle && '' === $key ) {
+			// Drop the keyless description row added by the plugin.
+			continue;
+		} else {
+			$other_rows[] = $row;
 		}
 	}
-	return $item_data;
-}, 20 );
+
+	return array_merge( $other_rows, $bundle_rows );
+}, 20, 2 );
+
+// ── Bundle package — clean up order detail display (UI only, data untouched) ──
+// WooCommerce auto-saves all cart item meta as order item meta, so all raw
+// devicehub_* keys appear in the order received / view-order pages. We hide
+// them all and inject one clean "Bundle Package: Name — price LKR" line.
+
+add_filter( 'woocommerce_hidden_order_itemmeta', function( array $hidden ): array {
+	return array_merge( $hidden, [
+		'devicehub_package_id',
+		'devicehub_package_external_id',
+		'devicehub_package_code',
+		'devicehub_package_name',
+		'devicehub_package_display_name',
+		'devicehub_package_description',
+		'devicehub_package_price_amount',
+		'devicehub_package_currency',
+		'devicehub_package_billing_label',
+		'devicehub_package_was_required',
+	] );
+} );
+
+add_filter( 'woocommerce_order_item_get_formatted_meta_data', function( array $meta_data, $item ): array {
+	$display_name = $item->get_meta( 'devicehub_package_display_name' );
+	if ( ! $display_name ) {
+		return $meta_data;
+	}
+
+	$price    = $item->get_meta( 'devicehub_package_price_amount' );
+	$currency = $item->get_meta( 'devicehub_package_currency' );
+	$value    = $display_name;
+
+	if ( $price ) {
+		$value .= ' — ' . number_format( (float) $price, 2 );
+		if ( $currency ) {
+			$value .= ' ' . strtoupper( $currency );
+		}
+	}
+
+	$meta_data[] = (object) [
+		'key'           => 'devicehub_bundle_display',
+		'display_key'   => __( 'Bundle Package', 'devicehub-bundlepackage' ),
+		'value'         => $value,
+		'display_value' => wp_kses_post( $value ),
+	];
+
+	return $meta_data;
+}, 10, 2 );
 
 
 add_action( 'woocommerce_cart_calculate_fees', 'devhub_add_bundle_package_fees' );

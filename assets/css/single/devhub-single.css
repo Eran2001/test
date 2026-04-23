@@ -621,6 +621,11 @@
   font-weight: 600;
   color: var(--devhub-black);
   line-height: 1.4;
+  min-height: calc(var(--devhub-text-2xl) * 1.4 * 2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .devhub-single__bundle-meta {
@@ -634,6 +639,10 @@
   font-size: var(--devhub-text-xl);
   line-height: 1.5;
   color: var(--devhub-mid);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .devhub-single__bundle-row {
