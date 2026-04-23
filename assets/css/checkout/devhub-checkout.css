@@ -2092,6 +2092,11 @@ li.woocommerce-order-overview__payment-method {
   display: none !important;
 }
 
+/* Hide bundle meta from product row on order received — bundle already shown as its own line item */
+.woocommerce-order-received .wc-item-meta {
+  display: none !important;
+}
+
 /* Hide plugin's bundle block — we render our own clean line via WC meta system */
 dl.dh-order-pkg {
   display: none;
