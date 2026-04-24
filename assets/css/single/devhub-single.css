@@ -1093,6 +1093,16 @@
   border-collapse: collapse;
 }
 
+.devhub-single__spec-group {
+  padding: 14px 20px;
+  font-size: var(--devhub-text-2xl);
+  font-weight: 700;
+  color: var(--devhub-dark);
+  vertical-align: top;
+  width: 140px;
+  border-right: 1px solid #e8e8e8;
+}
+
 .devhub-single__specs-table tr:nth-child(odd) {
   background-color: var(--devhub-bg);
 }
@@ -1109,8 +1119,8 @@
 
 .devhub-single__spec-label {
   width: 240px;
-  color: var(--devhub-mid);
-  font-weight: 500;
+  color: var(--devhub-text-secondary, #666);
+  font-weight: 400;
 }
 
 .devhub-single__spec-value {

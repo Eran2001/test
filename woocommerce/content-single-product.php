@@ -84,7 +84,7 @@ foreach ($quick_stats_config as $attr_key => $config) {
     ]);
 }
 
-// Full specs table
+// Full specs table — attributes only under General (other groups come later)
 $specs = [];
 foreach ($attributes as $attr_key => $attribute) {
     $terms = $attribute->get_terms();
@@ -98,6 +98,38 @@ foreach ($attributes as $attr_key => $attribute) {
     $specs[] = [
         'label' => $label,
         'value' => implode(', ', array_map(fn($t) => $t->name, $terms)),
+    ];
+}
+
+// Physical specs — weight and dimensions from the Shipping tab.
+// For variable products, parent stores no shipping data — pull from first available variation.
+$physical_specs = [];
+$phys_source = $product;
+if ($is_variable) {
+    $variation_ids = $product->get_children();
+    foreach ($variation_ids as $vid) {
+        $v = wc_get_product($vid);
+        if ($v && ($v->get_weight() !== '' || $v->get_length() !== '')) {
+            $phys_source = $v;
+            break;
+        }
+    }
+}
+$weight = $phys_source->get_weight();
+if ($weight !== '' && $weight !== null && $weight !== false) {
+    $physical_specs[] = [
+        'label' => __('Weight', 'devicehub-theme'),
+        'value' => $weight . ' ' . get_option('woocommerce_weight_unit', 'kg'),
+    ];
+}
+$dim_length = $phys_source->get_length();
+$dim_width  = $phys_source->get_width();
+$dim_height = $phys_source->get_height();
+$dim_parts  = array_filter([$dim_length, $dim_width, $dim_height], fn($v) => $v !== '' && $v !== null && $v !== false);
+if (!empty($dim_parts)) {
+    $physical_specs[] = [
+        'label' => __('Dimensions (L×W×H)', 'devicehub-theme'),
+        'value' => implode(' × ', $dim_parts) . ' ' . get_option('woocommerce_dimension_unit', 'cm'),
     ];
 }
 
@@ -162,7 +194,7 @@ if ($has_feature_content($returns_html)) {
 }
 
 $has_features_tab = !empty($features_sections);
-$has_specs_tab = !empty($quick_stats) || !empty($specs);
+$has_specs_tab = !empty($quick_stats) || !empty($specs) || !empty($physical_specs);
 $features_is_active = $has_features_tab;
 $specs_is_active = !$has_features_tab && $has_specs_tab;
 
@@ -487,15 +519,35 @@ $specs_is_active = !$has_features_tab && $has_specs_tab;
                             </div>
                         <?php endif; ?>
 
-                        <?php if (!empty($specs)): ?>
+                        <?php if (!empty($specs) || !empty($physical_specs)): ?>
                             <table class="devhub-single__specs-table">
                                 <tbody>
-                                    <?php foreach ($specs as $spec): ?>
-                                        <tr>
-                                            <td class="devhub-single__spec-label"><?php echo esc_html($spec['label']); ?></td>
-                                            <td class="devhub-single__spec-value"><?php echo esc_html($spec['value']); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                    <?php if (!empty($specs)): ?>
+                                        <?php foreach ($specs as $index => $spec): ?>
+                                            <tr>
+                                                <?php if ($index === 0): ?>
+                                                    <td class="devhub-single__spec-group" rowspan="<?php echo count($specs); ?>">
+                                                        <?php esc_html_e('General', 'devicehub-theme'); ?>
+                                                    </td>
+                                                <?php endif; ?>
+                                                <td class="devhub-single__spec-label"><?php echo esc_html($spec['label']); ?></td>
+                                                <td class="devhub-single__spec-value"><?php echo esc_html($spec['value']); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                    <?php if (!empty($physical_specs)): ?>
+                                        <?php foreach ($physical_specs as $index => $spec): ?>
+                                            <tr>
+                                                <?php if ($index === 0): ?>
+                                                    <td class="devhub-single__spec-group" rowspan="<?php echo count($physical_specs); ?>">
+                                                        <?php esc_html_e('Physical', 'devicehub-theme'); ?>
+                                                    </td>
+                                                <?php endif; ?>
+                                                <td class="devhub-single__spec-label"><?php echo esc_html($spec['label']); ?></td>
+                                                <td class="devhub-single__spec-value"><?php echo esc_html($spec['value']); ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         <?php endif; ?>
